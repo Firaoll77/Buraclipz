@@ -1,0 +1,147 @@
+// Prisma Schema for Addis Ababa Barbershop Appointment Booking System
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum AppointmentStatus {
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
+
+model Barber {
+  id           String         @id @default(cuid())
+  name         String
+  phone        String
+  email        String?
+  bio          String?
+  avatarUrl    String?
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  workingHours WorkingHours[]
+  timeOff      TimeOff[]
+  timeSlotConfigs TimeSlotConfig[]
+  appointments Appointment[]
+
+  @@map("barbers")
+}
+
+model Service {
+  id              String        @id @default(cuid())
+  name            String
+  description     String?
+  durationMinutes Int           // Service duration in minutes (e.g. 30, 45, 60)
+  priceEtb        Int           // Price in Ethiopian Birr (ETB)
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  appointments    Appointment[]
+
+  @@map("services")
+}
+
+model WorkingHours {
+  id             String   @id @default(cuid())
+  barberId       String
+  dayOfWeek      Int      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  isOpen         Boolean  @default(true)
+  startTime      String   // Shop local time "HH:mm" (e.g., "09:00")
+  endTime        String   // Shop local time "HH:mm" (e.g., "19:00")
+  breakStartTime String?  // Optional break start (e.g., "13:00")
+  breakEndTime   String?  // Optional break end (e.g., "14:00")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  barber         Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, dayOfWeek])
+  @@map("working_hours")
+}
+
+model TimeOff {
+  id        String   @id @default(cuid())
+  barberId  String
+  startDate DateTime // Start date/time in shop time
+  endDate   DateTime // End date/time in shop time
+  reason    String?
+  createdAt DateTime @default(now())
+
+  barber    Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@index([barberId, startDate, endDate])
+  @@map("time_off")
+}
+
+model TimeSlotConfig {
+  id          String   @id @default(cuid())
+  barberId    String
+  dayOfWeek   Int      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  slotStart   String   // Slot start time "HH:mm"
+  slotEnd     String   // Slot end time "HH:mm"
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  barber      Barber   @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  @@unique([barberId, dayOfWeek, slotStart])
+  @@index([barberId, dayOfWeek])
+  @@map("time_slot_configs")
+}
+
+model Customer {
+  id             String        @id @default(cuid())
+  name           String
+  phone          String        // Ethiopian phone (+251 9XX XXX XXX)
+  email          String?
+  telegramChatId String?
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  appointments   Appointment[]
+
+  @@index([phone])
+  @@map("customers")
+}
+
+model Appointment {
+  id                 String            @id @default(cuid())
+  bookingReference   String            @unique // Human readable e.g., "ARB-2489"
+  customerId         String
+  barberId           String
+  serviceId          String
+  startTime          DateTime          // Scheduled start in Gregorian UTC/local
+  endTime            DateTime          // Scheduled end = startTime + duration
+  status             AppointmentStatus @default(BOOKED)
+  priceEtb           Int               // Locked-in price in ETB
+  paymentScreenshot  String?           // URL of payment screenshot
+  notes              String?
+  cancellationToken  String            @unique @default(cuid()) // Secure token for cancel/reschedule
+  cancellationReason String?
+  cancelledAt        DateTime?
+  reminderSent24h    Boolean           @default(false)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  customer           Customer          @relation(fields: [customerId], references: [id])
+  barber             Barber            @relation(fields: [barberId], references: [id])
+  service            Service           @relation(fields: [serviceId], references: [id])
+
+  // Performance and double-booking index
+  @@index([barberId, startTime, endTime])
+  @@index([cancellationToken])
+  @@index([status, startTime])
+  @@map("appointments")
+}
+
