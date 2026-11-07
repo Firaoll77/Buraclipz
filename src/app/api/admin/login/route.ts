@@ -4,9 +4,29 @@ import {
   ADMIN_SESSION_COOKIE,
   createSessionToken,
 } from "@/lib/admin-auth";
+import {
+  getClientIp,
+  checkRateLimit,
+  recordFailedAttempt,
+  recordSuccessfulLogin,
+} from "@/lib/admin-rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const clientIp = getClientIp(request.headers);
+
+    // 1. Rate-Limit Check
+    const rateCheck = checkRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      const minutes = Math.ceil((rateCheck.retryAfterSeconds || 60) / 60);
+      return NextResponse.json(
+        {
+          error: `Too many failed attempts. Login temporarily locked for ${minutes} minute(s).`,
+        },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { password } = body as { password?: string };
 
@@ -29,8 +49,26 @@ export async function POST(request: NextRequest) {
     }
 
     if (!match) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+      const failStatus = recordFailedAttempt(clientIp);
+      if (failStatus.locked) {
+        return NextResponse.json(
+          {
+            error: "Too many failed attempts. Portal locked for 15 minutes to prevent unauthorized access.",
+          },
+          { status: 429 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          error: `Invalid password. ${failStatus.remainingAttempts} attempt(s) remaining before temporary lockout.`,
+        },
+        { status: 401 }
+      );
     }
+
+    // 2. Successful Login: Clear any failed attempt records
+    recordSuccessfulLogin(clientIp);
 
     const token = createSessionToken();
 
