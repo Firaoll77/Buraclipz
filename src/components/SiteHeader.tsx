@@ -129,15 +129,11 @@ export default function SiteHeader() {
             })}
           </div>
 
-          <div className="pt-15 mt-5 border-t border-[#333333] flex items-center justify-between text-xs text-gray-400 px-5">
-            <span>Call: +251 911 223 344</span>
-            <Link
-              href="/admin/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-[#ff8442] font-bold hover:underline"
-            >
-              Staff Portal →
-            </Link>
+          <div className="pt-4 mt-5 border-t border-[#333333] flex items-center justify-between text-xs text-gray-400 px-5">
+            <a href="tel:+251911223344" className="hover:text-white transition-colors">
+              📞 +251 911 223 344
+            </a>
+            <span className="text-gray-500">Bole Medhanialem</span>
           </div>
         </div>
       )}
