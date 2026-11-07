@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy Policy | Arada Barbershop Addis Ababa",
+  title: "Privacy Policy | Buraclipz Addis Ababa",
   description:
-    "Privacy and data protection policy for Arada Barbershop appointment booking platform in Addis Ababa, Ethiopia.",
+    "Privacy and data protection policy for Buraclipz appointment booking platform in Addis Ababa, Ethiopia.",
 };
 
 export default function PrivacyPage() {
@@ -19,7 +19,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="text-sm sm:text-base text-[#666666] max-w-2xl leading-relaxed font-medium">
-          Arada Barbershop (Bole Medhanialem, Addis Ababa, Ethiopia) • Effective January 2026
+          Buraclipz (Bole Medhanialem, Addis Ababa, Ethiopia) • Effective January 2026
         </p>
       </div>
 
@@ -28,7 +28,7 @@ export default function PrivacyPage() {
         <section className="flex flex-col gap-10">
           <h2 className="font-heading text-2xl text-[#000000]">1. Local Guarantee: No Online Payments</h2>
           <p className="text-[#666666] font-medium leading-relaxed">
-            Arada Barbershop operates exclusively on an <strong>in-shop payment</strong> model in Addis Ababa. We never request, collect, or store credit card numbers, debit cards, PINs, or bank account credentials on this website. All grooming services are settled in cash or via local mobile banking (Telebirr / CBE Birr) directly at our shop counter upon completion.
+            Buraclipz operates exclusively on an <strong>in-shop payment</strong> model in Addis Ababa. We never request, collect, or store credit card numbers, debit cards, PINs, or bank account credentials on this website. All grooming services are settled in cash or via local mobile banking (Telebirr / CBE Birr) directly at our shop counter upon completion.
           </p>
         </section>
 
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
         <section className="flex flex-col gap-10 pt-15 border-t-2 border-[#141414]/15">
           <h2 className="font-heading text-2xl text-[#000000]">6. Contacting the Shop</h2>
           <div className="p-15 rounded-card bg-[#faf5ea] border-2 border-[#141414] text-xs font-mono space-y-3">
-            <p className="font-bold text-[#000000]">Arada Barbershop</p>
+            <p className="font-bold text-[#000000]">Buraclipz</p>
             <p>Cameroon Street, Bole Medhanialem, Addis Ababa, Ethiopia</p>
             <p>Phone: +251 911 223 344 • Telegram: @AradaBarberBot</p>
           </div>

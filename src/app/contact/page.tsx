@@ -37,7 +37,7 @@ export default function ContactPage() {
           <span className="badge-accent">Addis Ababa Shop</span>
         </div>
         <h1 className="font-heading text-4xl sm:text-6xl text-[#000000] tracking-tight uppercase">
-          Contact Arada Barbershop
+          Contact Buraclipz
         </h1>
         <p className="text-sm sm:text-base text-[#666666] max-w-2xl leading-relaxed font-medium">
           Questions about styling, wedding group bookings, or need immediate assistance? Reach our barbershop in Addis Ababa directly via phone, Telegram, or through the message form below.

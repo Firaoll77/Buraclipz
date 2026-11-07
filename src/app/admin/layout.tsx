@@ -61,10 +61,10 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
             className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm"
             style={{ background: "#ff9800" }}
           >
-            AB
+            BC
           </div>
           <div>
-            <p className="font-semibold text-sm" style={{ color: "#000" }}>Arada Barber</p>
+            <p className="font-semibold text-sm" style={{ color: "#000" }}>Buraclipz</p>
             <p className="text-xs" style={{ color: "#666" }}>Admin Panel</p>
           </div>
         </div>
@@ -158,7 +158,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           </button>
-          <span className="font-semibold text-sm">Arada Barber Admin</span>
+          <span className="font-semibold text-sm">Buraclipz Admin</span>
         </header>
 
         {/* Page Content */}

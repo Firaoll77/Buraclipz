@@ -81,7 +81,7 @@ export async function sendBookingTelegramAlert(
   const manageUrl = `${APP_URL}/manage/${payload.cancellationToken}`;
 
   const messageText = `
-💈 <b>New Booking: Arada Men's Grooming</b>
+💈 <b>New Booking: Buraclipz</b>
 
 🔖 <b>Ref:</b> <code>${payload.bookingReference}</code>
 👤 <b>Customer:</b> ${payload.customerName}
@@ -110,7 +110,7 @@ ${payload.notes ? `📝 <b>Notes:</b> <i>${payload.notes}</i>\n` : ""}
   // 2. Notify customer directly if they linked Telegram
   if (payload.telegramChatId) {
     const customerMsg = `
-💈 <b>Booking Confirmed - Arada Men's Grooming</b>
+💈 <b>Booking Confirmed - Buraclipz</b>
 
 Hello ${payload.customerName}! Your appointment is confirmed:
 
@@ -148,7 +148,7 @@ export async function send24HourReminderTelegram(
   const reminderText = `
 ⏰ <b>Appointment Reminder: Tomorrow at ${timeDisplay}</b>
 
-Hello ${payload.customerName}, this is a reminder of your appointment tomorrow at Arada Men's Grooming!
+Hello ${payload.customerName}, this is a reminder of your appointment tomorrow at Buraclipz!
 
 🔖 <b>Ref:</b> <code>${payload.bookingReference}</code>
 ✂️ <b>Service:</b> ${payload.serviceName}

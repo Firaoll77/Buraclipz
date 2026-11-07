@@ -7,7 +7,7 @@ import { formatDualDate, formatETB } from "../ethiopian-calendar";
 import { minutesTo12HourString } from "../date-utils";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
-const EMAIL_FROM = process.env.EMAIL_FROM || "Arada Barbershop <booking@arada-barber.et>";
+const EMAIL_FROM = process.env.EMAIL_FROM || "Buraclipz <booking@buraclipz.et>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 /**
@@ -89,10 +89,10 @@ export async function sendBookingConfirmationEmail(
   const timeDisplay = minutesTo12HourString(timeMin);
   const manageUrl = `${APP_URL}/manage/${payload.cancellationToken}`;
 
-  const subject = `Booking Confirmed: ${payload.bookingReference} - Arada Men's Grooming`;
+  const subject = `Booking Confirmed: ${payload.bookingReference} - Buraclipz`;
 
   const text = `
-Arada Men's Grooming - Appointment Confirmed
+Buraclipz - Appointment Confirmed
 ============================================
 Hello ${payload.customerName},
 
@@ -110,13 +110,13 @@ Need to reschedule or cancel? (Must be at least 2 hours before):
 ${manageUrl}
 
 We look forward to serving you!
-Arada Men's Grooming Addis Ababa
+Buraclipz Addis Ababa
 `.trim();
 
   const html = `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #3A3A3A; color: #FFFFFF; padding: 25px; border-radius: 20px;">
   <div style="text-align: center; border-bottom: 1px solid #525252; padding-bottom: 20px;">
-    <h1 style="color: #ff9800; margin: 0; font-size: 24px;">Arada Men's Grooming</h1>
+    <h1 style="color: #ff9800; margin: 0; font-size: 24px;">Buraclipz</h1>
     <p style="color: #CCCCCC; font-size: 13px; margin: 5px 0 0 0;">Bole Medhanialem, Addis Ababa</p>
   </div>
 
@@ -140,7 +140,7 @@ Arada Men's Grooming Addis Ababa
   </div>
 
   <div style="border-top: 1px solid #525252; padding-top: 15px; text-align: center; font-size: 11px; color: #999999;">
-    Arada Men's Grooming • Bole Medhanialem, Addis Ababa • Direct: +251 911 223 344
+    Buraclipz • Bole Medhanialem, Addis Ababa • Direct: +251 911 223 344
   </div>
 </div>
   `.trim();
@@ -166,14 +166,14 @@ export async function send24HourReminderEmail(
   const timeDisplay = minutesTo12HourString(timeMin);
   const manageUrl = `${APP_URL}/manage/${payload.cancellationToken}`;
 
-  const subject = `Reminder: Tomorrow at ${timeDisplay} - Arada Men's Grooming (${payload.bookingReference})`;
+  const subject = `Reminder: Tomorrow at ${timeDisplay} - Buraclipz (${payload.bookingReference})`;
 
   const text = `
 Reminder: Your Barbershop Appointment Tomorrow!
 ==============================================
 Hello ${payload.customerName},
 
-This is a friendly reminder of your appointment tomorrow at Arada Men's Grooming.
+This is a friendly reminder of your appointment tomorrow at Buraclipz.
 
 Ref:         ${payload.bookingReference}
 Service:     ${payload.serviceName}
@@ -192,7 +192,7 @@ See you tomorrow!
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #3A3A3A; color: #FFFFFF; padding: 25px; border-radius: 20px;">
   <div style="text-align: center; border-bottom: 1px solid #525252; padding-bottom: 20px;">
     <h1 style="color: #ff9800; margin: 0; font-size: 22px;">Appointment Tomorrow!</h1>
-    <p style="color: #CCCCCC; font-size: 13px; margin: 5px 0 0 0;">Arada Men's Grooming • Addis Ababa</p>
+    <p style="color: #CCCCCC; font-size: 13px; margin: 5px 0 0 0;">Buraclipz • Addis Ababa</p>
   </div>
 
   <div style="padding: 20px 0;">

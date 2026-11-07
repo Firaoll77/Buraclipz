@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Location & Directions | Arada Barbershop Addis Ababa",
+  title: "Location & Directions | Buraclipz Addis Ababa",
   description:
-    "Find Arada Barbershop in Bole Medhanialem, Cameroon Street, Addis Ababa. View directions, transport access, and map.",
+    "Find Buraclipz in Bole Medhanialem, Cameroon Street, Addis Ababa. View directions, transport access, and map.",
 };
 
 export default function LocationPage() {
@@ -32,7 +32,7 @@ export default function LocationPage() {
               Shop Address &amp; Contact
             </h2>
             <div className="text-sm text-[#000000] space-y-5 font-medium">
-              <p className="font-heading text-xl text-[#000000]">Arada Barbershop</p>
+              <p className="font-heading text-xl text-[#000000]">Buraclipz</p>
               <p>Cameroon Street, Bole Sub-City, Woreda 03</p>
               <p>Morning Star Mall Area (opposite Medhanialem Cathedral)</p>
               <p>Addis Ababa, Ethiopia</p>
@@ -80,7 +80,7 @@ export default function LocationPage() {
 
           <div className="w-full flex-1 min-h-[320px] lg:min-h-[440px] rounded-card overflow-hidden border-2 border-[#141414]">
             <iframe
-              title="Arada Barbershop Location Addis Ababa"
+              title="Buraclipz Location Addis Ababa"
               width="100%"
               height="100%"
               style={{ border: 0, minHeight: 320 }}

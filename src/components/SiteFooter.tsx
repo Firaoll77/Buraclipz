@@ -33,7 +33,7 @@ export default function SiteFooter() {
           <div className="col-span-12 lg:col-span-4 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-[#5b4cff] text-white font-bold text-xl flex items-center justify-center shadow-md shrink-0">
-                AB
+                BC
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function SiteFooter() {
                   </span>
                 </div>
                 <span className="text-sm text-gray-400 mt-1">
-                  Arada Barbershop &middot; Bole Medhanialem
+                  Buraclipz &middot; Bole Medhanialem
                 </span>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function SiteFooter() {
         <div className="flex items-center justify-between py-1">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#5b4cff] text-white font-bold text-base flex items-center justify-center shadow-sm">
-              AB
+              BC
             </div>
             <div>
               <span className="text-base font-bold text-white block leading-tight">Buraclipz</span>
@@ -191,7 +191,7 @@ export default function SiteFooter() {
               </p>
               <div className="w-full h-36 rounded-lg overflow-hidden border border-gray-700 mt-2">
                 <iframe
-                  title="Arada Barbershop Map"
+                  title="Buraclipz Map"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -235,7 +235,7 @@ export default function SiteFooter() {
 
         {/* Mobile Copyright Footer */}
         <div className="pt-3 text-center text-xs text-gray-400 border-t border-gray-800/60">
-          <p>© {year} Arada Barbershop &middot; Bole Medhanialem &middot; UTC+3</p>
+          <p>© {year} Buraclipz &middot; Bole Medhanialem &middot; UTC+3</p>
         </div>
       </div>
     </footer>

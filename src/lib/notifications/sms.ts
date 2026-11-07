@@ -103,7 +103,7 @@ export async function sendBookingSms(
   const timeDisplay = minutesTo12HourString(timeMin);
   const dual = formatDualDate(payload.startTime);
 
-  const message = `Arada Barbershop: Booking ${payload.bookingReference} confirmed for ${payload.serviceName} with ${payload.barberName} on ${dual.gregorianFormatted} at ${timeDisplay}. Total: ${formatETB(payload.priceEtb)} at shop.`;
+  const message = `Buraclipz: Booking ${payload.bookingReference} confirmed for ${payload.serviceName} with ${payload.barberName} on ${dual.gregorianFormatted} at ${timeDisplay}. Total: ${formatETB(payload.priceEtb)} at shop.`;
 
   return await provider.sendSms(payload.customerPhone, message);
 }

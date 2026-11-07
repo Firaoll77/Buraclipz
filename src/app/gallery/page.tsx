@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Haircut Gallery | Arada Barbershop Addis Ababa",
+  title: "Haircut Gallery | Buraclipz Addis Ababa",
   description:
-    "Explore our authentic haircuts, fades, beard designs, and grooming work at Arada Barbershop in Addis Ababa.",
+    "Explore our authentic haircuts, fades, beard designs, and grooming work at Buraclipz in Addis Ababa.",
 };
 
 const GALLERY_ITEMS = [

@@ -32,11 +32,11 @@ export default function SiteHeader() {
         {/* Brand Logo in Staatliches */}
         <Link href="/" className="flex items-center gap-12 group">
           <div className="w-44 h-44 rounded-pill bg-[#ff8442] text-black font-heading text-2xl flex items-center justify-center border-2 border-[#141414] shadow-[2px_3px_0px_#141414] group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform shrink-0">
-            AB
+            BC
           </div>
           <div className="flex flex-col">
             <span className="font-heading text-2xl sm:text-3xl tracking-normal text-[#000000] leading-none">
-              ARADA BARBERSHOP
+              BURACLIPZ
             </span>
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#666666] mt-1">
               Addis Ababa • Est. 2024

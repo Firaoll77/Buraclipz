@@ -2,7 +2,7 @@ import Link from "next/link";
 import { formatDualDate } from "@/lib/ethiopian-calendar";
 
 export const metadata = {
-  title: "Opening Hours | Arada Barbershop Addis Ababa",
+  title: "Opening Hours | Buraclipz Addis Ababa",
   description:
     "Check daily shop opening hours, break times, and schedule in Addis Ababa local time (UTC+3).",
 };

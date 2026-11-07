@@ -52,7 +52,7 @@ function LoginForm() {
               <circle cx="12" cy="8" r="4" />
             </svg>
           </div>
-          <h1 className="text-xl font-semibold text-white">Arada Barber Admin</h1>
+          <h1 className="text-xl font-semibold text-white">Buraclipz Admin</h1>
           <p className="text-sm mt-1" style={{ color: "#d0d0d0" }}>Sign in to manage the shop</p>
         </div>
 
@@ -93,7 +93,7 @@ function LoginForm() {
         </div>
 
         <p className="text-center text-xs mt-6" style={{ color: "#bbb" }}>
-          Arada Barber &middot; Addis Ababa, Ethiopia
+          Buraclipz &middot; Addis Ababa, Ethiopia
         </p>
       </div>
     </div>

@@ -233,7 +233,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
           See You In The Chair!
         </h2>
         <p className="text-sm text-[#666666] mt-3">
-          Your appointment has been secured at Arada Barbershop, Bole Medhanialem.
+          Your appointment has been secured at Buraclipz, Bole Medhanialem.
         </p>
         <button
           onClick={() => {

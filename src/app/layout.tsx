@@ -3,7 +3,7 @@ import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Arada Barbershop | Addis Ababa Men's Grooming",
+  title: "Buraclipz",
   description:
     "Own your style, embrace your power. Premium haircuts, beard grooming, and hot towel treatments in Bole Medhanialem, Addis Ababa, Ethiopia.",
 };
