@@ -5,41 +5,44 @@ import { join } from "path";
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const file = formData.get("file") as File | null;
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
     // Validate file type
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
+    if (!file.type || !file.type.startsWith("image/")) {
+      return NextResponse.json({ error: "Only image files are allowed (JPEG, PNG, WEBP)" }, { status: 400 });
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: "File size must be less than 5MB" }, { status: 400 });
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: "File size must be less than 10MB" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const mimeType = file.type || "image/jpeg";
+    const base64DataUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
 
-    // Create uploads directory if it doesn't exist
-    const uploadDir = join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
+    // 1. In Local Development or persistent storage, attempt to write to disk
+    try {
+      const uploadDir = join(process.cwd(), "public", "uploads");
+      await mkdir(uploadDir, { recursive: true });
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const filename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-    const filepath = join(uploadDir, filename);
+      const timestamp = Date.now();
+      const safeName = (file.name || "receipt.jpg").replace(/[^a-zA-Z0-9.-]/g, "_");
+      const filename = `${timestamp}-${safeName}`;
+      const filepath = join(uploadDir, filename);
 
-    // Write file
-    await writeFile(filepath, buffer);
-
-    // Return the public URL
-    const url = `/uploads/${filename}`;
-
-    return NextResponse.json({ url });
+      await writeFile(filepath, buffer);
+      return NextResponse.json({ url: `/uploads/${filename}` });
+    } catch {
+      // 2. Serverless / Read-Only Filesystem Fallback (Vercel):
+      // Return Base64 Data URL so images render anywhere without read-only filesystem errors
+      return NextResponse.json({ url: base64DataUrl });
+    }
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
