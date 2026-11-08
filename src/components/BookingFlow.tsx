@@ -670,9 +670,6 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                     <span className="font-mono text-sm sm:text-base font-bold text-[#0f0f14] tracking-wider block">
                       {TELEBIRR_NUMBER}
                     </span>
-                    <span className="text-[11px] text-[#555555] block mt-0.5">
-                      Name: <strong className="text-[#0f0f14]">{TELEBIRR_NAME}</strong>
-                    </span>
                   </div>
 
                   <button
