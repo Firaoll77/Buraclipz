@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  ScissorsIcon,
+  LocationIcon,
+  PhoneIcon,
+} from "@/components/icons/Hugeicons";
 import { useState } from "react";
 
 export default function SiteFooter() {
@@ -152,7 +157,10 @@ export default function SiteFooter() {
             className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-200"
             aria-expanded={openSection === "nav"}
           >
-            <span>💈 Quick Navigation</span>
+            <span className="flex items-center gap-2">
+              <ScissorsIcon size={16} className="text-[#a59bff]" />
+              Quick Navigation
+            </span>
             <span className="text-base font-bold text-[#5b4cff]">
               {openSection === "nav" ? "−" : "+"}
             </span>
@@ -173,7 +181,10 @@ export default function SiteFooter() {
             className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-200"
             aria-expanded={openSection === "location"}
           >
-            <span>📍 Shop Location &amp; Directions</span>
+            <span className="flex items-center gap-2">
+              <LocationIcon size={16} className="text-[#a59bff]" />
+              Shop Location &amp; Directions
+            </span>
             <span className="text-base font-bold text-[#5b4cff]">
               {openSection === "location" ? "−" : "+"}
             </span>
@@ -183,8 +194,9 @@ export default function SiteFooter() {
               <p className="text-gray-400">
                 Cameroon Street, Bole Medhanialem (Next to Morning Star Mall), Addis Ababa, Ethiopia
               </p>
-              <p>
-                📞 Direct Phone:{" "}
+              <p className="flex items-center gap-1.5">
+                <PhoneIcon size={14} className="text-[#5b4cff] shrink-0" />
+                <span>Direct Phone: </span>
                 <a href="tel:+251911223344" className="text-[#5b4cff] font-semibold underline">
                   +251 911 223 344
                 </a>

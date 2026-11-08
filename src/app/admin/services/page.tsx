@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  ScissorsIcon,
+  CloseIcon,
+  AlertTriangleIcon,
+} from "@/components/icons/Hugeicons";
 
 interface Service {
   id: string;
@@ -140,7 +145,9 @@ export default function ServicesPage() {
             <h2 className="text-lg font-semibold" style={{ color: "#000" }}>
               {editId ? "Edit Service" : "New Service"}
             </h2>
-            <button onClick={() => setShowForm(false)} style={{ color: "#999" }}>✕</button>
+            <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
+              <CloseIcon size={18} />
+            </button>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -194,7 +201,7 @@ export default function ServicesPage() {
                 className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl"
                 style={{ background: "#fff3e0" }}
               >
-                💈
+                <ScissorsIcon size={22} className="text-[#ff9800]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm" style={{ color: s.isActive ? "#000" : "#999" }}>
@@ -258,7 +265,7 @@ export default function ServicesPage() {
             {/* Header with Alert Icon & Details */}
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shrink-0 border border-red-100">
-                ⚠️
+                <AlertTriangleIcon size={24} className="text-red-600" />
               </div>
               <div className="flex-1">
                 <h3 id="alert-dialog-title" className="text-lg font-bold text-gray-900 leading-snug">

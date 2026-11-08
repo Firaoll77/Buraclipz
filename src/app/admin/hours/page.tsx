@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CheckmarkCircleIcon } from "@/components/icons/Hugeicons";
 
 interface WorkingHours {
   id: string;
@@ -180,13 +181,22 @@ export default function HoursPage() {
                 <button
                   onClick={() => saveDay(wh.dayOfWeek)}
                   disabled={saving === wh.dayOfWeek}
-                  className="btn-pill px-4 py-1.5 text-sm font-medium text-white shrink-0 disabled:opacity-50"
+                  className="btn-pill px-4 py-1.5 text-sm font-medium text-white shrink-0 disabled:opacity-50 inline-flex items-center gap-1.5"
                   style={{
                     background: saved === wh.dayOfWeek ? "#43a047" : "#ff9800",
                     minHeight: 36,
                   }}
                 >
-                  {saving === wh.dayOfWeek ? "Saving…" : saved === wh.dayOfWeek ? "✓ Saved" : "Save"}
+                  {saving === wh.dayOfWeek ? (
+                    "Saving…"
+                  ) : saved === wh.dayOfWeek ? (
+                    <>
+                      <CheckmarkCircleIcon size={14} />
+                      <span>Saved</span>
+                    </>
+                  ) : (
+                    "Save"
+                  )}
                 </button>
               </div>
             </div>

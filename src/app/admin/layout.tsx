@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  DashboardIcon,
+  CalendarIcon,
+  ClipboardListIcon,
+  ScissorsIcon,
+  GlobeIcon,
+  LogoutIcon,
+} from "@/components/icons/Hugeicons";
 
 const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard", icon: "📊", exact: true },
-  { href: "/admin/schedule", label: "Schedule", icon: "📅" },
-  { href: "/admin/bookings", label: "Bookings", icon: "📋" },
-  { href: "/admin/services", label: "Services", icon: "💈" },
+  { href: "/admin", label: "Dashboard", icon: <DashboardIcon size={18} />, exact: true },
+  { href: "/admin/schedule", label: "Schedule", icon: <CalendarIcon size={18} /> },
+  { href: "/admin/bookings", label: "Bookings", icon: <ClipboardListIcon size={18} /> },
+  { href: "/admin/services", label: "Services", icon: <ScissorsIcon size={18} /> },
 ];
 
 function NavLink({
@@ -20,7 +28,7 @@ function NavLink({
 }: {
   href: string;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   exact?: boolean;
   onClick?: () => void;
 }) {
@@ -37,7 +45,7 @@ function NavLink({
         color: isActive ? "white" : "#333",
       }}
     >
-      <span>{icon}</span>
+      <span className="shrink-0">{icon}</span>
       <span>{label}</span>
     </Link>
   );
@@ -81,18 +89,18 @@ function Sidebar({ onClose }: { onClose?: () => void }) {
       <div className="p-4 border-t" style={{ borderColor: "#e0e0e0" }}>
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-1"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-1 transition-colors hover:bg-gray-100"
           style={{ color: "#555" }}
         >
-          <span>🌐</span>
+          <GlobeIcon size={18} />
           <span>View Site</span>
         </Link>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors hover:bg-red-50"
           style={{ color: "#d32f2f" }}
         >
-          <span>🚪</span>
+          <LogoutIcon size={18} />
           <span>Sign Out</span>
         </button>
       </div>

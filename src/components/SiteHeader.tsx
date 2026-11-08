@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { PhoneIcon } from "@/components/icons/Hugeicons";
 import { formatDualDate } from "@/lib/ethiopian-calendar";
 
 export default function SiteHeader() {
@@ -130,8 +131,9 @@ export default function SiteHeader() {
           </div>
 
           <div className="pt-4 mt-5 border-t border-[#333333] flex items-center justify-between text-xs text-gray-400 px-5">
-            <a href="tel:+251911223344" className="hover:text-white transition-colors">
-              📞 +251 911 223 344
+            <a href="tel:+251911223344" className="hover:text-white transition-colors flex items-center gap-1.5">
+              <PhoneIcon size={14} className="text-[#ff8442]" />
+              <span>+251 911 223 344</span>
             </a>
             <span className="text-gray-500">Bole Medhanialem</span>
           </div>

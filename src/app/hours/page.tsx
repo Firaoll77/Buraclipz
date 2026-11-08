@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatDualDate } from "@/lib/ethiopian-calendar";
+import { ClockIcon, RefreshIcon } from "@/components/icons/Hugeicons";
 
 export const metadata = {
   title: "Opening Hours | Buraclipz Addis Ababa",
@@ -100,11 +101,17 @@ export default function HoursPage() {
             </h2>
             <div className="space-y-12 text-xs text-[#666666] leading-relaxed font-medium">
               <div className="p-12 rounded-card bg-[#faf5ea] border-2 border-[#141414]">
-                <p className="font-heading text-lg text-[#000000] mb-2">⏰ Arrive 5 Minutes Early</p>
+                <p className="font-heading text-lg text-[#000000] mb-2 flex items-center gap-2">
+                  <ClockIcon size={20} className="text-[#ff8442]" />
+                  <span>Arrive 5 Minutes Early</span>
+                </p>
                 <p>Please arrive 5 minutes before your time. Reservations are held for up to 10 minutes past your scheduled start.</p>
               </div>
               <div className="p-12 rounded-card bg-[#faf5ea] border-2 border-[#141414]">
-                <p className="font-heading text-lg text-[#6040ff] mb-2">🔄 2-Hour Reschedule Cutoff</p>
+                <p className="font-heading text-lg text-[#6040ff] mb-2 flex items-center gap-2">
+                  <RefreshIcon size={20} className="text-[#6040ff]" />
+                  <span>2-Hour Reschedule Cutoff</span>
+                </p>
                 <p>Modify or cancel self-service at zero fee using your secure link up to 2 hours before your slot.</p>
               </div>
             </div>

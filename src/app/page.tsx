@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ClockIcon } from "@/components/icons/Hugeicons";
 
 interface Service {
   id: string;
@@ -113,8 +114,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-[#e5e5e5]">
-                  <span className="text-xs font-medium text-[#666666]">
-                    ⏱ {s.durationMinutes} min
+                  <span className="text-xs font-medium text-[#666666] flex items-center gap-1.5">
+                    <ClockIcon size={13} strokeWidth={1.8} />
+                    <span>{s.durationMinutes} min</span>
                   </span>
                   <Link
                     href={`/book?serviceId=${s.id}`}

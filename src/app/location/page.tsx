@@ -1,4 +1,10 @@
 import Link from "next/link";
+import {
+  PhoneIcon,
+  CarIcon,
+  BusIcon,
+  LocationIcon,
+} from "@/components/icons/Hugeicons";
 
 export const metadata = {
   title: "Location & Directions | Buraclipz Addis Ababa",
@@ -41,10 +47,11 @@ export default function LocationPage() {
               <span className="text-xs text-[#666666] font-bold uppercase tracking-wider">Direct Telephone:</span>
               <a
                 href="tel:+251911223344"
-                className="btn-primary text-xs font-mono font-bold px-15 py-6"
+                className="btn-primary text-xs font-mono font-bold px-15 py-6 inline-flex items-center gap-1.5"
                 style={{ minHeight: 38 }}
               >
-                📞 +251 911 223 344
+                <PhoneIcon size={14} />
+                <span>+251 911 223 344</span>
               </a>
             </div>
           </div>
@@ -56,15 +63,24 @@ export default function LocationPage() {
             </h2>
             <div className="space-y-12 text-xs text-gray-300 leading-relaxed font-medium">
               <div className="p-12 rounded-card bg-[#141414] border border-[#262626]">
-                <p className="font-heading text-base text-[#ff8442] mb-3">🚗 Ride-Hailing (RIDE, Feres, Yango)</p>
+                <p className="font-heading text-base text-[#ff8442] mb-3 flex items-center gap-2">
+                  <CarIcon size={18} />
+                  <span>Ride-Hailing (RIDE, Feres, Yango)</span>
+                </p>
                 <p>Set destination to &ldquo;Morning Star Mall, Bole&rdquo;. Our shop is located 50 meters south along Cameroon Street.</p>
               </div>
               <div className="p-12 rounded-card bg-[#141414] border border-[#262626]">
-                <p className="font-heading text-base text-[#6040ff] mb-3">🚐 Minibus &amp; Public Taxi</p>
+                <p className="font-heading text-base text-[#6040ff] mb-3 flex items-center gap-2">
+                  <BusIcon size={18} />
+                  <span>Minibus &amp; Public Taxi</span>
+                </p>
                 <p>Take any Bole/Edna Mall taxi from Stadium or Megenagna. Drop off at Medhanialem Cathedral stop; walk 2 minutes towards Morning Star Mall.</p>
               </div>
               <div className="p-12 rounded-card bg-[#141414] border border-[#262626]">
-                <p className="font-heading text-base text-[#ff8442] mb-3">🅿️ Customer Parking</p>
+                <p className="font-heading text-base text-[#ff8442] mb-3 flex items-center gap-2">
+                  <LocationIcon size={18} />
+                  <span>Customer Parking</span>
+                </p>
                 <p>Surface parking available directly in front of the shop and secure underground parking at Morning Star Mall.</p>
               </div>
             </div>

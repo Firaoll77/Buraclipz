@@ -1,4 +1,12 @@
 import Link from "next/link";
+import React from "react";
+import {
+  ScissorsIcon,
+  BarberPoleIcon,
+  UserIcon,
+  SparklesIcon,
+  CrownIcon,
+} from "@/components/icons/Hugeicons";
 
 export const metadata = {
   title: "Haircut Gallery | Buraclipz Addis Ababa",
@@ -6,13 +14,20 @@ export const metadata = {
     "Explore our authentic haircuts, fades, beard designs, and grooming work at Buraclipz in Addis Ababa.",
 };
 
-const GALLERY_ITEMS = [
+const GALLERY_ITEMS: {
+  title: string;
+  category: string;
+  barber: string;
+  desc: string;
+  icon: React.ReactNode;
+  duration: string;
+}[] = [
   {
     title: "Low Skin Fade & Lineup",
     category: "Fades & Tapers",
     barber: "Dawit Tadesse",
     desc: "Seamless taper blend from zero with surgical razor edge contouring along the hairline and temple.",
-    icon: "✂️",
+    icon: <ScissorsIcon size={32} className="text-[#ff8442]" />,
     duration: "45 min",
   },
   {
@@ -20,7 +35,7 @@ const GALLERY_ITEMS = [
     category: "Classic Cuts",
     barber: "Dawit Tadesse",
     desc: "Hand-crafted scissor silhouette, side-part structure, with lightweight styling balm finish.",
-    icon: "💈",
+    icon: <BarberPoleIcon size={32} className="text-[#5b4cff]" />,
     duration: "40 min",
   },
   {
@@ -28,7 +43,7 @@ const GALLERY_ITEMS = [
     category: "Beard Care",
     barber: "Yohannes Bekele",
     desc: "Essential oil mist, hot towel opening pores, precise cheek and neck straight-razor lines.",
-    icon: "🧔",
+    icon: <UserIcon size={32} className="text-[#ff8442]" />,
     duration: "25 min",
   },
   {
@@ -36,7 +51,7 @@ const GALLERY_ITEMS = [
     category: "Fades & Tapers",
     barber: "Yohannes Bekele",
     desc: "Modern Addis urban style, clean contrast gradient, texture scissor work on crown.",
-    icon: "✂️",
+    icon: <ScissorsIcon size={32} className="text-[#5b4cff]" />,
     duration: "45 min",
   },
   {
@@ -44,7 +59,7 @@ const GALLERY_ITEMS = [
     category: "Scalp Therapy",
     barber: "Abel Girma",
     desc: "Stimulating pressure-point scalp treatment, herbal shampoo, and invigorating eucalyptus rinse.",
-    icon: "💆‍♂️",
+    icon: <SparklesIcon size={32} className="text-[#ff8442]" />,
     duration: "30 min",
   },
   {
@@ -52,7 +67,7 @@ const GALLERY_ITEMS = [
     category: "VIP Packages",
     barber: "Abel Girma",
     desc: "Complete haircut, beard architecture, hot towel facial scrub, and shoulder-release massage.",
-    icon: "👑",
+    icon: <CrownIcon size={32} className="text-[#ff9800]" />,
     duration: "80 min",
   },
 ];
@@ -83,7 +98,7 @@ export default function GalleryPage() {
           >
             <div className="flex flex-col gap-12">
               <div className="w-full h-120 rounded-card bg-[#faf5ea] border-2 border-[#141414] flex flex-col items-center justify-center gap-5 text-center p-10">
-                <span className="text-3xl">{item.icon}</span>
+                <span className="flex items-center justify-center">{item.icon}</span>
                 <span className="badge-purple text-[10px] py-0.5 px-8">
                   {item.category}
                 </span>

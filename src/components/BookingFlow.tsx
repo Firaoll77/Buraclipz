@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatETB, formatDualDate, toEthiopianDate } from "@/lib/ethiopian-calendar";
 import { validateEthiopianPhone, formatEthiopianPhone } from "@/lib/phone";
 import { getAddisDateString } from "@/lib/date-utils";
+import { ClockIcon, CheckmarkIcon, CloseIcon } from "@/components/icons/Hugeicons";
 
 interface Service {
   id: string;
@@ -268,8 +269,8 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
   if (bookingSuccess) {
     return (
       <div className="card-light max-w-xl mx-auto my-8 p-6 sm:p-8 text-center">
-        <div className="w-16 h-16 mx-auto rounded-lg bg-[#5b4cff] text-white flex items-center justify-center text-2xl mb-4">
-          ✓
+        <div className="w-16 h-16 mx-auto rounded-lg bg-[#5b4cff] text-white flex items-center justify-center mb-4">
+          <CheckmarkIcon size={32} strokeWidth={2.5} />
         </div>
         <span className="badge-purple mb-3">Booking Confirmed</span>
         <h2 className="text-2xl sm:text-3xl font-bold text-[#0f0f14] leading-tight">
@@ -339,7 +340,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                   }`}
                   aria-label={`Go to step ${num}`}
                 >
-                  {isDone ? "✓" : num}
+                  {isDone ? <CheckmarkIcon size={14} strokeWidth={2.5} /> : num}
                 </button>
               );
             })}
@@ -371,7 +372,13 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
       {errorMsg && (
         <div className="error-bar">
           <span>{errorMsg}</span>
-          <button onClick={() => setErrorMsg(null)} className="font-bold">✕</button>
+          <button
+            onClick={() => setErrorMsg(null)}
+            className="p-1 hover:opacity-80 transition-opacity"
+            aria-label="Dismiss error"
+          >
+            <CloseIcon size={16} strokeWidth={2} />
+          </button>
         </div>
       )}
 
@@ -414,8 +421,9 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                     </div>
 
                     <div className="flex justify-between items-center pt-3 border-t border-[#e5e5e5] text-sm">
-                      <span className="font-medium text-[#666666]">
-                        ⏱ {service.durationMinutes} min
+                      <span className="font-medium text-[#666666] flex items-center gap-1.5">
+                        <ClockIcon size={14} strokeWidth={1.8} />
+                        <span>{service.durationMinutes} min</span>
                       </span>
                       <span className="font-medium text-[#5b4cff]">
                         Select →
@@ -642,9 +650,10 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                           setPaymentScreenshot(null);
                           setPaymentScreenshotPreview("");
                         }}
-                        className="absolute top-2 right-2 w-8 h-8 rounded-lg bg-red-500 text-white flex items-center justify-center text-xs font-semibold"
+                        className="absolute top-2 right-2 w-8 h-8 rounded-lg bg-red-500 text-white flex items-center justify-center transition-opacity hover:opacity-90 shadow-sm"
+                        aria-label="Remove screenshot"
                       >
-                        ✕
+                        <CloseIcon size={16} strokeWidth={2.5} />
                       </button>
                     </div>
                   )}

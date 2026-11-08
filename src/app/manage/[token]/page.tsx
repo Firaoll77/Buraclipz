@@ -5,6 +5,13 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { formatETB, formatDualDate, toEthiopianDate } from "@/lib/ethiopian-calendar";
 import { getAddisDateString } from "@/lib/date-utils";
+import {
+  CheckmarkCircleIcon,
+  AlertTriangleIcon,
+  PhoneIcon,
+  CalendarIcon,
+  CancelCircleIcon,
+} from "@/components/icons/Hugeicons";
 
 interface AppointmentDetail {
   id: string;
@@ -236,8 +243,9 @@ export default function ManageAppointmentPage() {
 
       {/* Success alert */}
       {successMsg && (
-        <div className="p-15 bg-green-100 border-2 border-green-600 text-green-900 rounded-btn text-xs text-center font-bold">
-          ✓ {successMsg}
+        <div className="p-15 bg-green-100 border-2 border-green-600 text-green-900 rounded-btn text-xs text-center font-bold flex items-center justify-center gap-1.5">
+          <CheckmarkCircleIcon size={16} />
+          <span>{successMsg}</span>
         </div>
       )}
 
@@ -348,18 +356,20 @@ export default function ManageAppointmentPage() {
         {/* 2-HOUR CUTOFF EXPIRED BANNER */}
         {appointment.status === "BOOKED" && cutoff && !cutoff.canModify && (
           <div className="bg-[#faf5ea] p-15 rounded-card flex flex-col gap-8 border-2 border-[#ff8442] text-xs">
-            <div className="font-heading text-lg text-[#000000] flex items-center gap-10">
-              ⚠️ Online Modification Locked (Within 2 Hours)
+            <div className="font-heading text-lg text-[#000000] flex items-center gap-2">
+              <AlertTriangleIcon size={20} className="text-[#ff8442]" />
+              <span>Online Modification Locked (Within 2 Hours)</span>
             </div>
             <p className="text-[#666666] font-medium leading-relaxed">
               Online rescheduling and cancellation must be made at least <strong>2 hours</strong> in advance. For last-minute changes, please call our Bole shop directly.
             </p>
             <a
               href="tel:+251911223344"
-              className="btn-primary text-center font-extrabold text-xs mt-5 shadow-sm uppercase tracking-wider"
+              className="btn-primary text-center font-extrabold text-xs mt-5 shadow-sm uppercase tracking-wider inline-flex items-center justify-center gap-1.5"
               style={{ minHeight: 40 }}
             >
-              📞 Call Shop: +251 911 223 344
+              <PhoneIcon size={14} />
+              <span>Call Shop: +251 911 223 344</span>
             </a>
           </div>
         )}
@@ -372,20 +382,22 @@ export default function ManageAppointmentPage() {
                 setShowReschedule(!showReschedule);
                 setShowCancelModal(false);
               }}
-              className="btn-primary flex-1 text-xs uppercase tracking-wider font-extrabold"
+              className="btn-primary flex-1 text-xs uppercase tracking-wider font-extrabold inline-flex items-center justify-center gap-1.5"
               style={{ minHeight: 44 }}
             >
-              📅 {showReschedule ? "Close Reschedule" : "Reschedule Slot"}
+              <CalendarIcon size={16} />
+              <span>{showReschedule ? "Close Reschedule" : "Reschedule Slot"}</span>
             </button>
             <button
               onClick={() => {
                 setShowCancelModal(true);
                 setShowReschedule(false);
               }}
-              className="btn-secondary flex-1 text-xs uppercase tracking-wider font-bold text-red-600 hover:bg-red-50"
+              className="btn-secondary flex-1 text-xs uppercase tracking-wider font-bold text-red-600 hover:bg-red-50 inline-flex items-center justify-center gap-1.5"
               style={{ minHeight: 44 }}
             >
-              ✕ Cancel Appointment
+              <CancelCircleIcon size={16} />
+              <span>Cancel Appointment</span>
             </button>
           </div>
         )}

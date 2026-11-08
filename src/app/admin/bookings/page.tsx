@@ -2,6 +2,14 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toEthiopianDate } from "@/lib/ethiopian-calendar";
+import {
+  RefreshIcon,
+  ClockIcon,
+  AttachmentIcon,
+  CheckmarkCircleIcon,
+  CancelCircleIcon,
+  CloseIcon,
+} from "@/components/icons/Hugeicons";
 
 interface Appointment {
   id: string;
@@ -233,7 +241,7 @@ export default function BookingsPage() {
             style={{ minHeight: 40 }}
             title="Fetch new bookings"
           >
-            <span className={isRefreshing ? "inline-block animate-spin" : ""}>🔄</span>
+            <RefreshIcon size={15} className={isRefreshing ? "animate-spin" : ""} />
             <span>{isRefreshing ? "Refreshing…" : "Refresh"}</span>
           </button>
           <button
@@ -250,7 +258,7 @@ export default function BookingsPage() {
       {isRefreshing && (
         <div className="bg-[#f4f2ff] border border-[#5b4cff]/40 text-[#5b4cff] px-4 py-3 rounded-xl flex items-center justify-between shadow-sm animate-pulse">
           <div className="flex items-center gap-2.5">
-            <span className="inline-block animate-spin text-base">⏳</span>
+            <ClockIcon size={16} className="animate-spin text-[#5b4cff]" />
             <span className="text-xs font-semibold">
               Fetching latest customer bookings and payment receipts from database…
             </span>
@@ -266,7 +274,9 @@ export default function BookingsPage() {
             <h2 className="text-lg font-semibold" style={{ color: "#000" }}>
               {form.isWalkIn ? "Walk-in" : "Manual Booking"}
             </h2>
-            <button onClick={() => setShowNewForm(false)} style={{ color: "#999" }}>✕</button>
+            <button onClick={() => setShowNewForm(false)} className="text-gray-400 hover:text-gray-600">
+              <CloseIcon size={20} />
+            </button>
           </div>
 
           <form onSubmit={handleNewBooking} className="space-y-4">
@@ -495,9 +505,10 @@ export default function BookingsPage() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
-                                    className="text-xs text-[#5b4cff] font-medium underline"
+                                    className="text-xs text-[#5b4cff] font-medium underline inline-flex items-center gap-1"
                                   >
-                                    📎 View Payment Screenshot →
+                                    <AttachmentIcon size={13} />
+                                    <span>View Payment Screenshot →</span>
                                   </a>
                                 </div>
                               )}
@@ -517,10 +528,11 @@ export default function BookingsPage() {
                                       markStatus(appt.id, "COMPLETED");
                                     }}
                                     disabled={actionId === appt.id}
-                                    className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50"
+                                    className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
                                     style={{ background: "#e8f5e9", color: "#2e7d32", minHeight: 32 }}
                                   >
-                                    ✓ Done
+                                    <CheckmarkCircleIcon size={14} />
+                                    <span>Done</span>
                                   </button>
                                   <button
                                     onClick={(e) => {
@@ -528,10 +540,11 @@ export default function BookingsPage() {
                                       markStatus(appt.id, "CANCELLED");
                                     }}
                                     disabled={actionId === appt.id}
-                                    className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50"
+                                    className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
                                     style={{ background: "#fce4e4", color: "#c62828", minHeight: 32 }}
                                   >
-                                    ✕ Cancel
+                                    <CancelCircleIcon size={14} />
+                                    <span>Cancel</span>
                                   </button>
                                 </>
                               )}
@@ -592,9 +605,10 @@ export default function BookingsPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="text-xs text-[#5b4cff] font-medium underline"
+                          className="text-xs text-[#5b4cff] font-medium underline inline-flex items-center gap-1"
                         >
-                          📎 View Payment Screenshot →
+                          <AttachmentIcon size={13} />
+                          <span>View Payment Screenshot →</span>
                         </a>
                       </div>
                     )}
@@ -614,10 +628,11 @@ export default function BookingsPage() {
                             markStatus(appt.id, "COMPLETED");
                           }}
                           disabled={actionId === appt.id}
-                          className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50"
+                          className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
                           style={{ background: "#e8f5e9", color: "#2e7d32", minHeight: 32 }}
                         >
-                          ✓ Done
+                          <CheckmarkCircleIcon size={14} />
+                          <span>Done</span>
                         </button>
                         <button
                           onClick={(e) => {
@@ -625,10 +640,11 @@ export default function BookingsPage() {
                             markStatus(appt.id, "CANCELLED");
                           }}
                           disabled={actionId === appt.id}
-                          className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50"
+                          className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
                           style={{ background: "#fce4e4", color: "#c62828", minHeight: 32 }}
                         >
-                          ✕ Cancel
+                          <CancelCircleIcon size={14} />
+                          <span>Cancel</span>
                         </button>
                       </>
                     )}
@@ -646,7 +662,9 @@ export default function BookingsPage() {
           <div className="card-standard p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold" style={{ color: "#000" }}>Booking Details</h2>
-              <button onClick={() => setSelectedAppointment(null)} style={{ color: "#999", fontSize: "24px" }}>✕</button>
+              <button onClick={() => setSelectedAppointment(null)} className="text-gray-400 hover:text-gray-600">
+                <CloseIcon size={22} />
+              </button>
             </div>
             
             <div className="space-y-4">

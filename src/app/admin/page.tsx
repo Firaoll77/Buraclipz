@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import {
+  AddCircleIcon,
+  CalendarIcon,
+  BlockIcon,
+  ScissorsIcon,
+} from "@/components/icons/Hugeicons";
 
 interface DashboardData {
   stats: {
@@ -123,17 +129,17 @@ export default function AdminDashboard() {
       {/* Quick Links */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { href: "/admin/bookings", label: "New Booking", icon: "➕" },
-          { href: "/admin/schedule", label: "Today's Schedule", icon: "📅" },
-          { href: "/admin/blocked", label: "Block Time", icon: "🚫" },
-          { href: "/admin/services", label: "Edit Services", icon: "💈" },
+          { href: "/admin/bookings", label: "New Booking", icon: <AddCircleIcon size={24} className="text-[#ff9800]" /> },
+          { href: "/admin/schedule", label: "Today's Schedule", icon: <CalendarIcon size={24} className="text-[#5b4cff]" /> },
+          { href: "/admin/blocked", label: "Block Time", icon: <BlockIcon size={24} className="text-[#d32f2f]" /> },
+          { href: "/admin/services", label: "Edit Services", icon: <ScissorsIcon size={24} className="text-[#ff8442]" /> },
         ].map((link) => (
           <Link
             key={link.href}
             href={link.href}
             className="card-standard p-4 flex flex-col items-center gap-2 text-center hover:shadow-md transition-shadow"
           >
-            <span className="text-2xl">{link.icon}</span>
+            <span className="flex items-center justify-center h-8">{link.icon}</span>
             <span className="text-xs font-medium" style={{ color: "#333" }}>{link.label}</span>
           </Link>
         ))}

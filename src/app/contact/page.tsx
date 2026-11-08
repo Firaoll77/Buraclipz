@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import {
+  PhoneIcon,
+  TelegramIcon,
+  LocationIcon,
+  CheckmarkCircleIcon,
+} from "@/components/icons/Hugeicons";
 import { validateEthiopianPhone } from "@/lib/phone";
 
 export default function ContactPage() {
@@ -55,7 +61,9 @@ export default function ContactPage() {
               {/* Phone */}
               <div className="flex items-center justify-between p-15 rounded-card bg-[#141414] border border-[#262626]">
                 <div className="flex items-center gap-10">
-                  <span className="text-2xl">📞</span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#262626]">
+                    <PhoneIcon size={20} className="text-[#ff8442]" />
+                  </span>
                   <div>
                     <span className="text-xs text-gray-400 block font-medium">Phone Calls &amp; SMS</span>
                     <span className="font-mono font-bold text-white text-sm">+251 911 223 344</span>
@@ -73,7 +81,9 @@ export default function ContactPage() {
               {/* Telegram */}
               <div className="flex items-center justify-between p-15 rounded-card bg-[#141414] border border-[#262626]">
                 <div className="flex items-center gap-10">
-                  <span className="text-2xl">✈️</span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#262626]">
+                    <TelegramIcon size={20} className="text-[#0088cc]" />
+                  </span>
                   <div>
                     <span className="text-xs text-gray-400 block font-medium">Telegram Bot &amp; Support</span>
                     <span className="font-semibold text-white text-sm">@AradaBarberBot</span>
@@ -93,7 +103,9 @@ export default function ContactPage() {
               {/* Location */}
               <div className="flex items-center justify-between p-15 rounded-card bg-[#141414] border border-[#262626]">
                 <div className="flex items-center gap-10">
-                  <span className="text-2xl">📍</span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-[#262626]">
+                    <LocationIcon size={20} className="text-[#5b4cff]" />
+                  </span>
                   <div>
                     <span className="text-xs text-gray-400 block font-medium">Shop Location</span>
                     <span className="font-medium text-white text-sm">Bole Medhanialem, Cameroon St</span>
@@ -127,7 +139,7 @@ export default function ContactPage() {
 
           {submitted ? (
             <div className="bg-[#faf5ea] p-30 rounded-card border-2 border-[#141414] flex flex-col items-center justify-center text-center gap-12 my-auto shadow-[3px_4px_0px_#141414]">
-              <span className="text-5xl">✅</span>
+              <CheckmarkCircleIcon size={48} className="text-[#10b981]" />
               <h3 className="font-heading text-3xl text-[#000000]">Message Received!</h3>
               <p className="text-xs text-[#666666] leading-relaxed font-medium max-w-sm">
                 Ameseginalehu (Thank you), {name}! Our team will get back to you at {phone} promptly.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { CheckmarkCircleIcon } from "@/components/icons/Hugeicons";
 
 interface Appointment {
   id: string;
@@ -264,9 +265,10 @@ export default function SchedulePage() {
                       <div className="flex items-center gap-2 pt-1.5 border-t border-white/20 mt-1">
                         <button
                           onClick={() => markStatus(appt.id, "COMPLETED")}
-                          className="text-[11px] bg-white text-[#5b4cff] font-bold px-2 py-0.5 rounded-md hover:bg-white/90 transition-colors shadow-xs"
+                          className="text-[11px] bg-white text-[#5b4cff] font-bold px-2 py-0.5 rounded-md hover:bg-white/90 transition-colors shadow-xs inline-flex items-center gap-1"
                         >
-                          ✓ Complete
+                          <CheckmarkCircleIcon size={12} />
+                          <span>Complete</span>
                         </button>
                         <span className="text-[10px] text-white/80 uppercase tracking-wide">
                           {appt.bookingReference}
