@@ -7,10 +7,10 @@ import { validateEthiopianPhone, formatEthiopianPhone } from "@/lib/phone";
 import { getAddisDateString } from "@/lib/date-utils";
 import { ClockIcon, CheckmarkIcon, CloseIcon, CopyIcon } from "@/components/icons/Hugeicons";
 
-const TELEBIRR_NUMBER = process.env.NEXT_PUBLIC_TELEBIRR_NUMBER || "0911223344";
-const TELEBIRR_NAME = process.env.NEXT_PUBLIC_TELEBIRR_NAME || "Buraclipz";
-const CBE_ACCOUNT = process.env.NEXT_PUBLIC_CBE_ACCOUNT || "1000123456789";
-const CBE_NAME = process.env.NEXT_PUBLIC_CBE_NAME || "Buraclipz";
+const TELEBIRR_NUMBER = process.env.NEXT_PUBLIC_TELEBIRR_NUMBER || "+251 96 771 0870";
+const TELEBIRR_NAME = process.env.NEXT_PUBLIC_TELEBIRR_NAME || "FIRAOL BAYISA";
+const CBE_ACCOUNT = process.env.NEXT_PUBLIC_CBE_ACCOUNT || "1000 4589 2310 9874";
+const CBE_NAME = process.env.NEXT_PUBLIC_CBE_NAME || "FIRAOL BAYISA";
 
 interface Service {
   id: string;
@@ -647,16 +647,24 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
               {/* Accounts Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 {/* Telebirr Card */}
-                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-2.5">
+                <div className="p-3 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
+                  <div className="w-full aspect-[16/10] rounded-lg overflow-hidden border border-[#e5e5e5] shadow-xs bg-[#0b382c]">
+                    <img
+                      src="/images/telebirr-card.jpg"
+                      alt="Telebirr Digital Wallet Card"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#00a651]" />
                       <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
-                        Telebirr
+                        Telebirr Wallet
                       </span>
                     </div>
                     <span className="text-[10px] font-semibold text-[#666666] bg-[#f0f0f3] px-1.5 py-0.5 rounded">
-                      Mobile Money
+                      Mobile Account
                     </span>
                   </div>
 
@@ -673,7 +681,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                   <button
                     type="button"
                     onClick={() => handleCopy(TELEBIRR_NUMBER, "telebirr")}
-                    className="w-full text-xs font-semibold py-1.5 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
+                    className="w-full text-xs font-semibold py-2 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
                   >
                     {copiedKey === "telebirr" ? (
                       <>
@@ -690,16 +698,24 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                 </div>
 
                 {/* CBE Account Card */}
-                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-2.5">
+                <div className="p-3 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
+                  <div className="w-full aspect-[16/10] rounded-lg overflow-hidden border border-[#e5e5e5] shadow-xs bg-[#161618]">
+                    <img
+                      src="/images/cbe-card.jpg"
+                      alt="Commercial Bank of Ethiopia Debit Card"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#8c1d40]" />
                       <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
-                        CBE (Commercial Bank)
+                        Commercial Bank of Ethiopia
                       </span>
                     </div>
                     <span className="text-[10px] font-semibold text-[#666666] bg-[#f0f0f3] px-1.5 py-0.5 rounded">
-                      Bank Transfer
+                      CBE Account
                     </span>
                   </div>
 
@@ -715,8 +731,8 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
 
                   <button
                     type="button"
-                    onClick={() => handleCopy(CBE_ACCOUNT, "cbe")}
-                    className="w-full text-xs font-semibold py-1.5 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
+                    onClick={() => handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
+                    className="w-full text-xs font-semibold py-2 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
                   >
                     {copiedKey === "cbe" ? (
                       <>
