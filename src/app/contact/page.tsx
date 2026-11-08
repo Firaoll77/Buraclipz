@@ -108,7 +108,7 @@ export default function ContactPage() {
                   </span>
                   <div>
                     <span className="text-xs text-gray-400 block font-medium">Shop Location</span>
-                    <span className="font-medium text-white text-sm">Bole Medhanialem, Cameroon St</span>
+                    <span className="font-medium text-white text-sm">Ayat 49, Addis Ababa</span>
                   </div>
                 </div>
                 <Link

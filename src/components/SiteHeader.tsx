@@ -135,7 +135,7 @@ export default function SiteHeader() {
               <PhoneIcon size={14} className="text-[#ff8442]" />
               <span>+251 911 223 344</span>
             </a>
-            <span className="text-gray-500">Bole Medhanialem</span>
+            <span className="text-gray-500">Ayat 49</span>
           </div>
         </div>
       )}

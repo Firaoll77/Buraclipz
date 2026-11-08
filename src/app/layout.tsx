@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Buraclipz",
   description:
-    "Own your style, embrace your power. Premium haircuts, beard grooming, and hot towel treatments in Bole Medhanialem, Addis Ababa, Ethiopia.",
+    "Own your style, embrace your power. Premium haircuts, beard grooming, and hot towel treatments in Ayat 49, Addis Ababa, Ethiopia.",
 };
 
 export const viewport: Viewport = {

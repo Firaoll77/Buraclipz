@@ -19,7 +19,7 @@ export default function PrivacyPage() {
           Privacy Policy
         </h1>
         <p className="text-sm sm:text-base text-[#666666] max-w-2xl leading-relaxed font-medium">
-          Buraclipz (Bole Medhanialem, Addis Ababa, Ethiopia) • Effective January 2026
+          Buraclipz (Ayat 49, Addis Ababa, Ethiopia) • Effective January 2026
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
           <h2 className="font-heading text-2xl text-[#000000]">6. Contacting the Shop</h2>
           <div className="p-15 rounded-card bg-[#faf5ea] border-2 border-[#141414] text-xs font-mono space-y-3">
             <p className="font-bold text-[#000000]">Buraclipz</p>
-            <p>Cameroon Street, Bole Medhanialem, Addis Ababa, Ethiopia</p>
+            <p>Ayat 49, Yeka Sub-City, Addis Ababa, Ethiopia</p>
             <p>Phone: +251 911 223 344 • Telegram: @AradaBarberBot</p>
           </div>
         </section>

@@ -50,7 +50,7 @@ export default function SiteFooter() {
                   </span>
                 </div>
                 <span className="text-sm text-gray-400 mt-1">
-                  Buraclipz &middot; Bole Medhanialem
+                  Buraclipz &middot; Ayat 49
                 </span>
               </div>
             </div>
@@ -81,9 +81,9 @@ export default function SiteFooter() {
             </h3>
             <div className="flex flex-col gap-2 text-sm text-gray-300">
               <p className="leading-snug">
-                <strong className="text-white">Bole Medhanialem</strong>
+                <strong className="text-white">Ayat 49</strong>
                 <br />
-                <span className="text-gray-400 text-xs">Cameroon St (Next to Morning Star Mall), Addis Ababa</span>
+                <span className="text-gray-400 text-xs">Ayat 49, Yeka Sub-City, Addis Ababa</span>
               </p>
               <div className="mt-1 pt-2 border-t border-gray-800/60 text-xs text-gray-400 space-y-1">
                 <p>
@@ -139,7 +139,7 @@ export default function SiteFooter() {
             </div>
             <div>
               <span className="text-base font-bold text-white block leading-tight">Buraclipz</span>
-              <span className="text-xs text-gray-400">Bole Medhanialem, Addis Ababa</span>
+              <span className="text-xs text-gray-400">Ayat 49, Addis Ababa</span>
             </div>
           </div>
           <a
@@ -192,7 +192,7 @@ export default function SiteFooter() {
           {openSection === "location" && (
             <div className="px-4 pb-4 pt-2 border-t border-gray-800/60 text-xs text-gray-300 space-y-2.5">
               <p className="text-gray-400">
-                Cameroon Street, Bole Medhanialem (Next to Morning Star Mall), Addis Ababa, Ethiopia
+                Ayat 49, Yeka Sub-City, Addis Ababa, Ethiopia
               </p>
               <p className="flex items-center gap-1.5">
                 <PhoneIcon size={14} className="text-[#5b4cff] shrink-0" />
@@ -208,7 +208,7 @@ export default function SiteFooter() {
                   height="100%"
                   style={{ border: 0 }}
                   loading="lazy"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.660144675549!2d38.7844089!3d8.9951804!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b84fd62947477%3A0xe54d9c7e3aa037a5!2sBole%20Medhanialem%20Church!5e0!3m2!1sen!2set"
+                  src="https://maps.google.com/maps?q=Ayat+49,+Addis+Ababa,+Ethiopia&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 />
               </div>
             </div>
@@ -247,7 +247,7 @@ export default function SiteFooter() {
 
         {/* Mobile Copyright Footer */}
         <div className="pt-3 text-center text-xs text-gray-400 border-t border-gray-800/60">
-          <p>© {year} Buraclipz &middot; Bole Medhanialem &middot; UTC+3</p>
+          <p>© {year} Buraclipz &middot; Ayat 49 &middot; UTC+3</p>
         </div>
       </div>
     </footer>

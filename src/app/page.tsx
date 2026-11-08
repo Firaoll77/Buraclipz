@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ClockIcon } from "@/components/icons/Hugeicons";
+import { ClockIcon, LocationIcon, PhoneIcon } from "@/components/icons/Hugeicons";
 
 interface Service {
   id: string;
@@ -128,6 +128,80 @@ export default function HomePage() {
               </div>
             ))
           )}
+        </div>
+      </section>
+
+      {/* Location & Map Section */}
+      <section className="flex flex-col gap-6 px-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <span className="badge-purple mb-2 inline-block">Visit Our Shop</span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0f0f14]">
+              Location &amp; Map
+            </h2>
+          </div>
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Ayat+49+Addis+Ababa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-semibold text-[#5b4cff] hover:underline flex items-center gap-1"
+          >
+            Open in Google Maps ↗
+          </a>
+        </div>
+
+        <div className="card-light p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-bold text-[#5b4cff] uppercase tracking-wider mb-1">
+                <LocationIcon size={16} />
+                <span>Ayat 49 &middot; Addis Ababa</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-[#0f0f14]">
+                Buraclipz Barber Shop
+              </h3>
+              <p className="text-sm text-[#666666] mt-2 leading-relaxed">
+                Ayat 49, Yeka Sub-City, Addis Ababa, Ethiopia. Easy access via Ayat Mazoriya and the Light Rail Transit terminal.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-[#e5e5e5]">
+              <div>
+                <span className="text-xs font-semibold text-[#888888] uppercase block">Working Hours</span>
+                <p className="text-sm font-medium text-[#0f0f14] mt-1">Mon – Sat: 9:00 AM – 8:00 PM</p>
+                <p className="text-sm font-medium text-[#0f0f14]">Sunday: 10:00 AM – 6:00 PM</p>
+              </div>
+              <div>
+                <span className="text-xs font-semibold text-[#888888] uppercase block">Direct Line</span>
+                <a href="tel:+251911223344" className="text-sm font-bold text-[#5b4cff] hover:underline block mt-1">
+                  +251 911 223 344
+                </a>
+                <span className="text-xs text-[#888888]">Walk-ins &amp; appointments</span>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center gap-3">
+              <Link href="/book" className="btn-primary inline-flex">
+                Book an Appointment
+              </Link>
+              <Link href="/location" className="btn-secondary text-xs uppercase tracking-wider font-bold px-4 py-2.5">
+                Directions
+              </Link>
+            </div>
+          </div>
+
+          {/* Interactive Map Embed */}
+          <div className="lg:col-span-7 w-full h-[320px] sm:h-[380px] rounded-2xl overflow-hidden border border-[#e5e5e5] shadow-sm">
+            <iframe
+              title="Buraclipz Location Ayat 49"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              src="https://maps.google.com/maps?q=Ayat+49,+Addis+Ababa,+Ethiopia&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            />
+          </div>
         </div>
       </section>
     </main>

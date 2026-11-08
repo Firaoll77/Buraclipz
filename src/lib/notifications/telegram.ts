@@ -120,7 +120,7 @@ Hello ${payload.customerName}! Your appointment is confirmed:
 📅 <b>When:</b> ${dual.gregorianFormatted} at ${timeDisplay}
 🇪🇹 <b>Ethio Date:</b> ${dual.ethiopianFormatted}
 💵 <b>Price:</b> ${formatETB(payload.priceEtb)} (Pay at shop)
-📍 <b>Location:</b> Bole Medhanialem, Addis Ababa
+📍 <b>Location:</b> Ayat 49, Addis Ababa
 
 Manage / Cancel (up to 2h before):
 <a href="${manageUrl}">${manageUrl}</a>
@@ -156,7 +156,7 @@ Hello ${payload.customerName}, this is a reminder of your appointment tomorrow a
 📅 <b>When:</b> Tomorrow, ${dual.gregorianFormatted} at ${timeDisplay}
 🇪🇹 <b>Ethio Date:</b> ${dual.ethiopianFormatted}
 💵 <b>Total:</b> ${formatETB(payload.priceEtb)}
-📍 <b>Shop:</b> Bole Medhanialem, Addis Ababa
+📍 <b>Shop:</b> Ayat 49, Addis Ababa
 
 Manage appointment:
 <a href="${manageUrl}">${manageUrl}</a>

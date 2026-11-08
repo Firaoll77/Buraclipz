@@ -85,7 +85,7 @@ export default function GalleryPage() {
           Craft &amp; Styling Gallery
         </h1>
         <p className="text-sm sm:text-base text-[#666666] max-w-2xl leading-relaxed font-medium">
-          Signature cuts, clean gradients, and classic barbering craft from our Bole Medhanialem shop in Addis Ababa.
+          Signature cuts, clean gradients, and classic barbering craft from our Ayat 49 shop in Addis Ababa.
         </p>
       </div>
 

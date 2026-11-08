@@ -104,7 +104,7 @@ Barber:      ${payload.barberName}
 Date & Time: ${dual.gregorianFormatted} at ${timeDisplay}
              Ethiopian Date: ${dual.ethiopianFormatted}
 Price:       ${formatETB(payload.priceEtb)} (Pay at shop upon completion)
-Location:    Bole Medhanialem, Addis Ababa
+Location:    Ayat 49, Addis Ababa
 
 Need to reschedule or cancel? (Must be at least 2 hours before):
 ${manageUrl}
@@ -117,7 +117,7 @@ Buraclipz Addis Ababa
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #3A3A3A; color: #FFFFFF; padding: 25px; border-radius: 20px;">
   <div style="text-align: center; border-bottom: 1px solid #525252; padding-bottom: 20px;">
     <h1 style="color: #ff9800; margin: 0; font-size: 24px;">Buraclipz</h1>
-    <p style="color: #CCCCCC; font-size: 13px; margin: 5px 0 0 0;">Bole Medhanialem, Addis Ababa</p>
+    <p style="color: #CCCCCC; font-size: 13px; margin: 5px 0 0 0;">Ayat 49, Addis Ababa</p>
   </div>
 
   <div style="padding: 20px 0;">
@@ -140,7 +140,7 @@ Buraclipz Addis Ababa
   </div>
 
   <div style="border-top: 1px solid #525252; padding-top: 15px; text-align: center; font-size: 11px; color: #999999;">
-    Buraclipz • Bole Medhanialem, Addis Ababa • Direct: +251 911 223 344
+    Buraclipz • Ayat 49, Addis Ababa • Direct: +251 911 223 344
   </div>
 </div>
   `.trim();
@@ -180,7 +180,7 @@ Service:     ${payload.serviceName}
 Barber:      ${payload.barberName}
 Date & Time: Tomorrow, ${dual.gregorianFormatted} at ${timeDisplay} (${dual.ethiopianFormatted})
 Price:       ${formatETB(payload.priceEtb)} (Pay at shop)
-Location:    Bole Medhanialem, Addis Ababa
+Location:    Ayat 49, Addis Ababa
 
 Manage or cancel your booking (up to 2 hours before):
 ${manageUrl}

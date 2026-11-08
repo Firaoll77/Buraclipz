@@ -361,7 +361,7 @@ export default function ManageAppointmentPage() {
               <span>Online Modification Locked (Within 2 Hours)</span>
             </div>
             <p className="text-[#666666] font-medium leading-relaxed">
-              Online rescheduling and cancellation must be made at least <strong>2 hours</strong> in advance. For last-minute changes, please call our Bole shop directly.
+              Online rescheduling and cancellation must be made at least <strong>2 hours</strong> in advance. For last-minute changes, please call our Ayat 49 shop directly.
             </p>
             <a
               href="tel:+251911223344"

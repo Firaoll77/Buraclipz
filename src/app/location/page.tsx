@@ -9,7 +9,7 @@ import {
 export const metadata = {
   title: "Location & Directions | Buraclipz Addis Ababa",
   description:
-    "Find Buraclipz in Bole Medhanialem, Cameroon Street, Addis Ababa. View directions, transport access, and map.",
+    "Find Buraclipz at Ayat 49, Addis Ababa. View directions, transport access, and interactive map.",
 };
 
 export default function LocationPage() {
@@ -19,13 +19,13 @@ export default function LocationPage() {
       <div className="card-light p-28 sm:p-40 flex flex-col gap-12 bg-[#faf5ea] border-2 border-[#141414]">
         <div className="flex items-center gap-10">
           <span className="badge-accent">Addis Ababa</span>
-          <span className="badge-purple">Bole Sub-City</span>
+          <span className="badge-purple">Ayat 49 &middot; Yeka</span>
         </div>
         <h1 className="font-heading text-4xl sm:text-6xl text-[#000000] tracking-tight uppercase">
           Location &amp; Directions
         </h1>
         <p className="text-sm sm:text-base text-[#666666] max-w-2xl leading-relaxed font-medium">
-          Located on Cameroon Street in Bole Medhanialem, directly opposite Medhanialem Cathedral and adjacent to Morning Star Mall.
+          Located at Ayat 49 in eastern Addis Ababa, easily accessible from Ayat Mazoriya, the Light Rail Transit terminal, and main transport routes.
         </p>
       </div>
 
@@ -39,8 +39,8 @@ export default function LocationPage() {
             </h2>
             <div className="text-sm text-[#000000] space-y-5 font-medium">
               <p className="font-heading text-xl text-[#000000]">Buraclipz</p>
-              <p>Cameroon Street, Bole Sub-City, Woreda 03</p>
-              <p>Morning Star Mall Area (opposite Medhanialem Cathedral)</p>
+              <p>Ayat 49, Yeka Sub-City</p>
+              <p>Near Ayat Mazoriya &amp; LRT Terminal Area</p>
               <p>Addis Ababa, Ethiopia</p>
             </div>
             <div className="pt-10 border-t border-[#141414]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-10">
@@ -67,21 +67,21 @@ export default function LocationPage() {
                   <CarIcon size={18} />
                   <span>Ride-Hailing (RIDE, Feres, Yango)</span>
                 </p>
-                <p>Set destination to &ldquo;Morning Star Mall, Bole&rdquo;. Our shop is located 50 meters south along Cameroon Street.</p>
+                <p>Set destination to &ldquo;Ayat 49&rdquo; or &ldquo;Ayat Mazoriya&rdquo;. Our shop is located conveniently within Ayat 49.</p>
               </div>
               <div className="p-12 rounded-card bg-[#141414] border border-[#262626]">
                 <p className="font-heading text-base text-[#6040ff] mb-3 flex items-center gap-2">
                   <BusIcon size={18} />
                   <span>Minibus &amp; Public Taxi</span>
                 </p>
-                <p>Take any Bole/Edna Mall taxi from Stadium or Megenagna. Drop off at Medhanialem Cathedral stop; walk 2 minutes towards Morning Star Mall.</p>
+                <p>Take any Ayat, Tafo, or CMC taxi from Megenagna, Stadium, or Mexico. Drop off at the Ayat 49 / Ayat Mazoriya stop; walk 1 minute.</p>
               </div>
               <div className="p-12 rounded-card bg-[#141414] border border-[#262626]">
-                <p className="font-heading text-base text-[#ff8442] mb-3 flex items-center gap-2">
+                <p className="font-heading text-base text-[#5b4cff] mb-3 flex items-center gap-2">
                   <LocationIcon size={18} />
-                  <span>Customer Parking</span>
+                  <span>Light Rail (LRT) &amp; Parking</span>
                 </p>
-                <p>Surface parking available directly in front of the shop and secure underground parking at Morning Star Mall.</p>
+                <p>Take the East-West Light Rail to Ayat Terminal. Ample surface parking is available directly in front of the shop.</p>
               </div>
             </div>
           </div>
@@ -91,30 +91,41 @@ export default function LocationPage() {
         <div className="card-light p-28 flex flex-col gap-15 h-full border-2 border-[#141414]">
           <div className="flex items-center justify-between border-b-2 border-[#141414] pb-10">
             <h2 className="font-heading text-2xl text-[#000000]">Interactive Map</h2>
-            <span className="badge-purple text-[10px]">Addis Ababa, ET</span>
+            <span className="badge-purple text-[10px]">Ayat 49, Addis Ababa</span>
           </div>
 
           <div className="w-full flex-1 min-h-[320px] lg:min-h-[440px] rounded-card overflow-hidden border-2 border-[#141414]">
             <iframe
-              title="Buraclipz Location Addis Ababa"
+              title="Buraclipz Location Ayat 49 Addis Ababa"
               width="100%"
               height="100%"
               style={{ border: 0, minHeight: 320 }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.660144675549!2d38.7844089!3d8.9951804!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b84fd62947477%3A0xe54d9c7e3aa037a5!2sBole%20Medhanialem%20Church!5e0!3m2!1sen!2set!4v1710000000000!5m2!1sen!2set"
+              src="https://maps.google.com/maps?q=Ayat+49,+Addis+Ababa,+Ethiopia&t=&z=15&ie=UTF8&iwloc=&output=embed"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-10 pt-5 text-xs">
-            <span className="text-[#666666] font-mono font-bold">GPS: 8.9952° N, 38.7844° E</span>
-            <Link
-              href="/#book"
-              className="btn-primary text-xs uppercase tracking-wider font-extrabold px-20 py-8"
-              style={{ minHeight: 40 }}
-            >
-              Book an Appointment
-            </Link>
+            <span className="text-[#666666] font-mono font-bold">GPS: 9.0220° N, 38.8850° E</span>
+            <div className="flex items-center gap-2">
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Ayat+49+Addis+Ababa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary text-xs uppercase tracking-wider font-bold px-15 py-8"
+                style={{ minHeight: 40 }}
+              >
+                Google Maps ↗
+              </a>
+              <Link
+                href="/#book"
+                className="btn-primary text-xs uppercase tracking-wider font-extrabold px-20 py-8"
+                style={{ minHeight: 40 }}
+              >
+                Book Appointment
+              </Link>
+            </div>
           </div>
         </div>
       </div>
