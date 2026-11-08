@@ -61,6 +61,8 @@ export default function BookingsPage() {
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [showNewForm, setShowNewForm] = useState(false);
   const [actionId, setActionId] = useState<string | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -78,16 +80,20 @@ export default function BookingsPage() {
   const [formError, setFormError] = useState("");
   const [formLoading, setFormLoading] = useState(false);
 
-  const fetchAppointments = useCallback(async () => {
-    setLoading(true);
+  const fetchAppointments = useCallback(async (isManual = false) => {
+    if (isManual) {
+      setIsRefreshing(true);
+    } else {
+      setLoading(true);
+    }
     try {
-      const res = await fetch(`/api/admin/appointments${showAll ? '' : `?date=${date}`}`);
+      const res = await fetch(`/api/admin/appointments${showAll ? '' : `?date=${date}`}&t=${Date.now()}`);
       const data = await res.json();
       const viewAppts = data.appointments || [];
       setAppointments(viewAppts);
 
       // Fetch all to track incoming bookings
-      const allRes = await fetch(`/api/admin/appointments`);
+      const allRes = await fetch(`/api/admin/appointments?t=${Date.now()}`);
       const allData = await allRes.json();
       const allAppts = allData.appointments || [];
       setAllAppointments(allAppts);
@@ -100,25 +106,22 @@ export default function BookingsPage() {
         initialLoadRef.current = true;
         setNewBookingCount(0);
       } else {
-        // Subsequent poll / fetch: detect genuinely new bookings
+        // Subsequent fetch: detect genuinely new bookings
         const newIds = currentIds.filter((id: string) => !seenBookingIdsRef.current.has(id));
         if (newIds.length > 0) {
           setNewBookingCount((prev) => prev + newIds.length);
           newIds.forEach((id: string) => seenBookingIdsRef.current.add(id));
         }
       }
+      setLastUpdated(new Date());
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   }, [date, showAll]);
 
   useEffect(() => {
-    fetchAppointments();
-    // Poll every 10 seconds for live new bookings
-    const interval = setInterval(() => {
-      fetchAppointments();
-    }, 10000);
-    return () => clearInterval(interval);
+    fetchAppointments(false);
   }, [fetchAppointments]);
 
   useEffect(() => {
@@ -173,15 +176,22 @@ export default function BookingsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <div className="flex-1 flex items-center gap-3">
-          <h1 className="text-2xl font-bold" style={{ color: "#000" }}>Bookings</h1>
-          {newBookingCount > 0 && (
-            <button
-              onClick={() => setNewBookingCount(0)}
-              className="bg-[#ff9800] text-white text-xs font-bold px-3 py-1 rounded-full hover:bg-[#f57c00] transition-colors"
-            >
-              {newBookingCount} new (dismiss)
-            </button>
+        <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold" style={{ color: "#000" }}>Bookings</h1>
+            {newBookingCount > 0 && (
+              <button
+                onClick={() => setNewBookingCount(0)}
+                className="bg-[#ff9800] text-white text-xs font-bold px-3 py-1 rounded-full hover:bg-[#f57c00] transition-colors"
+              >
+                {newBookingCount} new (dismiss)
+              </button>
+            )}
+          </div>
+          {lastUpdated && (
+            <span className="text-[11px] text-gray-500 font-medium">
+              Checked {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </span>
           )}
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -213,6 +223,20 @@ export default function BookingsPage() {
             style={{ minHeight: 40, width: "auto" }}
           />
           <button
+            onClick={() => fetchAppointments(true)}
+            disabled={loading || isRefreshing}
+            className={`flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-xl font-medium border transition-all ${
+              isRefreshing
+                ? "bg-[#5b4cff]/10 border-[#5b4cff] text-[#5b4cff]"
+                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-100"
+            }`}
+            style={{ minHeight: 40 }}
+            title="Fetch new bookings"
+          >
+            <span className={isRefreshing ? "inline-block animate-spin" : ""}>🔄</span>
+            <span>{isRefreshing ? "Refreshing…" : "Refresh"}</span>
+          </button>
+          <button
             onClick={() => setShowNewForm(true)}
             className="btn-pill px-4 py-2 font-semibold text-white text-sm"
             style={{ background: "#ff9800", minHeight: 40 }}
@@ -221,6 +245,19 @@ export default function BookingsPage() {
           </button>
         </div>
       </div>
+
+      {/* Loading window during manual refresh */}
+      {isRefreshing && (
+        <div className="bg-[#f4f2ff] border border-[#5b4cff]/40 text-[#5b4cff] px-4 py-3 rounded-xl flex items-center justify-between shadow-sm animate-pulse">
+          <div className="flex items-center gap-2.5">
+            <span className="inline-block animate-spin text-base">⏳</span>
+            <span className="text-xs font-semibold">
+              Fetching latest customer bookings and payment receipts from database…
+            </span>
+          </div>
+          <span className="text-[11px] font-mono opacity-80">Syncing</span>
+        </div>
+      )}
 
       {/* New Booking / Walk-in Form */}
       {showNewForm && (

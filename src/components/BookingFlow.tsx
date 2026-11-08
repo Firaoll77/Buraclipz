@@ -213,16 +213,23 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
       setErrorMsg(null);
       setUploading(true);
 
-      // Upload payment screenshot
-      const formData = new FormData();
-      formData.append("file", paymentScreenshot);
-      const uploadRes = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const uploadData = await uploadRes.json();
-      if (!uploadRes.ok) {
-        throw new Error(uploadData.error || "Failed to upload payment screenshot");
+      // Upload payment screenshot with fallback to compressed base64 data URL
+      let screenshotUrl = paymentScreenshotPreview;
+      try {
+        const formData = new FormData();
+        formData.append("file", paymentScreenshot);
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          if (uploadData.url) {
+            screenshotUrl = uploadData.url;
+          }
+        }
+      } catch (uploadErr) {
+        console.warn("Upload fallback to data URL:", uploadErr);
       }
 
       // Use the first available barber (since there's only 1 barber)
@@ -238,7 +245,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
           time: selectedSlot.timeStr,
           customerName,
           customerPhone: phoneCheck.normalized,
-          paymentScreenshot: uploadData.url,
+          paymentScreenshot: screenshotUrl,
         }),
       });
 
@@ -604,18 +611,23 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                     type="file"
                     accept="image/*"
                     required
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (file) {
                         setPaymentScreenshot(file);
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setPaymentScreenshotPreview(reader.result as string);
-                        };
-                        reader.readAsDataURL(file);
+                        try {
+                          const compressed = await compressImage(file);
+                          setPaymentScreenshotPreview(compressed || "");
+                        } catch {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setPaymentScreenshotPreview(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
                       }
                     }}
-                    className="text-sm"
+                    className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#5b4cff] file:text-white hover:file:bg-[#4a3fe6] cursor-pointer"
                   />
                   {paymentScreenshotPreview && (
                     <div className="relative w-full h-40 rounded-lg overflow-hidden border border-[#e5e5e5]">
