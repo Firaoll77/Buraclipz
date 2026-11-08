@@ -5,7 +5,12 @@ import Link from "next/link";
 import { formatETB, formatDualDate, toEthiopianDate } from "@/lib/ethiopian-calendar";
 import { validateEthiopianPhone, formatEthiopianPhone } from "@/lib/phone";
 import { getAddisDateString } from "@/lib/date-utils";
-import { ClockIcon, CheckmarkIcon, CloseIcon } from "@/components/icons/Hugeicons";
+import { ClockIcon, CheckmarkIcon, CloseIcon, CopyIcon } from "@/components/icons/Hugeicons";
+
+const TELEBIRR_NUMBER = process.env.NEXT_PUBLIC_TELEBIRR_NUMBER || "0911223344";
+const TELEBIRR_NAME = process.env.NEXT_PUBLIC_TELEBIRR_NAME || "Buraclipz";
+const CBE_ACCOUNT = process.env.NEXT_PUBLIC_CBE_ACCOUNT || "1000123456789";
+const CBE_NAME = process.env.NEXT_PUBLIC_CBE_NAME || "Buraclipz";
 
 interface Service {
   id: string;
@@ -85,6 +90,15 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
   const [paymentScreenshotPreview, setPaymentScreenshotPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const handleCopy = (text: string, key: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    }
+  };
 
   // 1. Fetch Services on mount
   useEffect(() => {
@@ -603,6 +617,128 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                   {phoneError}
                 </span>
               )}
+            </div>
+
+            {/* Payment Method & Accounts Details */}
+            <div className="flex flex-col gap-3 p-4 sm:p-5 rounded-xl bg-[#faf5ea] border-2 border-[#141414]">
+              <div className="flex items-center justify-between border-b border-[#141414]/15 pb-3">
+                <div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#5b4cff] block">
+                    Payment Instructions
+                  </span>
+                  <h3 className="font-heading text-lg text-[#0f0f14]">
+                    Transfer Service Amount
+                  </h3>
+                </div>
+                {selectedService && (
+                  <div className="text-right">
+                    <span className="text-xs text-[#666666] block font-medium">Total Due:</span>
+                    <span className="font-heading text-xl font-bold text-[#5b4cff]">
+                      {formatETB(selectedService.priceEtb)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-xs text-[#555555] leading-relaxed">
+                Please transfer exactly <strong className="text-[#0f0f14]">{selectedService ? formatETB(selectedService.priceEtb) : ""}</strong> to either of the accounts below, then upload the receipt screenshot:
+              </p>
+
+              {/* Accounts Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {/* Telebirr Card */}
+                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#00a651]" />
+                      <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
+                        Telebirr
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-[#666666] bg-[#f0f0f3] px-1.5 py-0.5 rounded">
+                      Mobile Money
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] text-[#777777] block">Phone / Account:</span>
+                    <span className="font-mono text-sm sm:text-base font-bold text-[#0f0f14] tracking-wider block">
+                      {TELEBIRR_NUMBER}
+                    </span>
+                    <span className="text-[11px] text-[#555555] block mt-0.5">
+                      Name: <strong className="text-[#0f0f14]">{TELEBIRR_NAME}</strong>
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(TELEBIRR_NUMBER, "telebirr")}
+                    className="w-full text-xs font-semibold py-1.5 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
+                  >
+                    {copiedKey === "telebirr" ? (
+                      <>
+                        <CheckmarkIcon size={14} className="text-green-600" />
+                        <span className="text-green-600 font-bold">Copied to Clipboard!</span>
+                      </>
+                    ) : (
+                      <>
+                        <CopyIcon size={14} className="text-[#666666]" />
+                        <span>Copy Telebirr Number</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* CBE Account Card */}
+                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#8c1d40]" />
+                      <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
+                        CBE (Commercial Bank)
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-[#666666] bg-[#f0f0f3] px-1.5 py-0.5 rounded">
+                      Bank Transfer
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] text-[#777777] block">Account Number:</span>
+                    <span className="font-mono text-sm sm:text-base font-bold text-[#0f0f14] tracking-wider block">
+                      {CBE_ACCOUNT}
+                    </span>
+                    <span className="text-[11px] text-[#555555] block mt-0.5">
+                      Name: <strong className="text-[#0f0f14]">{CBE_NAME}</strong>
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(CBE_ACCOUNT, "cbe")}
+                    className="w-full text-xs font-semibold py-1.5 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
+                  >
+                    {copiedKey === "cbe" ? (
+                      <>
+                        <CheckmarkIcon size={14} className="text-green-600" />
+                        <span className="text-green-600 font-bold">Copied to Clipboard!</span>
+                      </>
+                    ) : (
+                      <>
+                        <CopyIcon size={14} className="text-[#666666]" />
+                        <span>Copy CBE Account</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Steps hint */}
+              <div className="text-[11px] text-[#666666] flex flex-col gap-0.5 pt-1">
+                <span>1. Open your Telebirr app or CBE Mobile Banking.</span>
+                <span>2. Send the exact amount ({selectedService ? formatETB(selectedService.priceEtb) : ""}) to either account above.</span>
+                <span>3. Take a screenshot of the transaction confirmation and upload it below.</span>
+              </div>
             </div>
 
             {/* Payment Screenshot Upload */}
