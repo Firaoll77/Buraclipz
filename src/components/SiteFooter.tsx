@@ -101,10 +101,10 @@ export default function SiteFooter() {
             </h3>
             <div className="flex flex-col gap-3">
               <a
-                href="tel:+251911223344"
+                href="tel:+251966184635"
                 className="inline-flex items-center justify-center gap-2 bg-[#5b4cff] hover:bg-[#4a3fe6] text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all shadow-sm"
               >
-                <span>Phone</span> +251 911 223 344
+                <span>Phone</span> +251 966 184 635
               </a>
               <div className="text-xs text-gray-400 space-y-1">
                 <p className="font-medium text-gray-300"> Pay at Shop:</p>

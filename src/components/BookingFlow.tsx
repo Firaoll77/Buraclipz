@@ -254,12 +254,13 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
   return (
     <div className="card-light p-4 sm:p-6 flex flex-col gap-6">
       {/* Interactive Step Header & Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#e5e5e5]">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-3 pb-4 border-b border-[#e5e5e5]">
+        {/* Top Control Bar: Back Button on left, Step indicators on right */}
+        <div className="flex items-center justify-between gap-3">
           {step === 1 ? (
             <Link
               href="/"
-              className="btn-secondary text-xs flex items-center gap-2 shrink-0"
+              className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 shrink-0"
               aria-label="Back to home"
             >
               ← Back
@@ -267,49 +268,59 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
           ) : (
             <button
               onClick={() => setStep((s) => (s - 1) as any)}
-              className="btn-secondary text-xs flex items-center gap-2 shrink-0"
+              className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 shrink-0"
               aria-label="Back to previous step"
             >
               ← Back
             </button>
           )}
-          <div>
-            <span className="badge-accent text-xs mb-1">
-              Step {step} of 3
-            </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#0f0f14] leading-tight">
-              {step === 1 && "Choose Your Grooming Service"}
-              {step === 2 && "Pick Date & Time"}
-              {step === 3 && "Enter Your Details"}
-            </h2>
+
+          {/* Stepper Pills on the right */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {[1, 2, 3].map((num) => {
+              const isActive = step === num;
+              const isDone = step > num;
+              return (
+                <button
+                  key={num}
+                  onClick={() => {
+                    if (num < step) setStep(num as any);
+                  }}
+                  disabled={num > step}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs sm:text-sm font-semibold flex items-center justify-center border transition-all ${
+                    isActive
+                      ? "bg-[#5b4cff] text-white border-[#5b4cff] shadow-sm"
+                      : isDone
+                      ? "bg-[#5b4cff]/90 text-white border-[#5b4cff]"
+                      : "bg-white text-[#888888] border-[#e5e5e5] cursor-not-allowed opacity-60"
+                  }`}
+                  aria-label={`Go to step ${num}`}
+                >
+                  {isDone ? "✓" : num}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Stepper Pills */}
-        <div className="flex items-center gap-2">
-          {[1, 2, 3].map((num) => {
-            const isActive = step === num;
-            const isDone = step > num;
-            return (
-              <button
-                key={num}
-                onClick={() => {
-                  if (num < step) setStep(num as any);
-                }}
-                disabled={num > step}
-                className={`w-8 h-8 rounded-lg text-sm flex items-center justify-center border transition-all ${
-                  isActive
-                    ? "bg-[#5b4cff] text-white border-[#5b4cff]"
-                    : isDone
-                    ? "bg-[#5b4cff] text-white border-[#5b4cff]"
-                    : "bg-white text-[#666666] border-[#e5e5e5] cursor-not-allowed opacity-50"
-                }`}
-                aria-label={`Go to step ${num}`}
-              >
-                {isDone ? "✓" : num}
-              </button>
-            );
-          })}
+        {/* Step Progress Line */}
+        <div className="w-full bg-[#f0f0f3] h-1.5 rounded-full overflow-hidden">
+          <div
+            className="bg-[#5b4cff] h-full transition-all duration-300 rounded-full"
+            style={{ width: `${(step / 3) * 100}%` }}
+          />
+        </div>
+
+        {/* Step Title & Subtitle: Full width, clean typography */}
+        <div className="flex flex-col gap-1 pt-1">
+          <span className="badge-accent text-[11px] font-bold uppercase tracking-wider w-fit">
+            Step {step} of 3
+          </span>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#0f0f14] leading-tight">
+            {step === 1 && "Choose Your Grooming Service"}
+            {step === 2 && "Pick Date & Time"}
+            {step === 3 && "Enter Your Details"}
+          </h2>
         </div>
       </div>
 
