@@ -609,9 +609,6 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                 placeholder="+251 9XX XXX XXX"
                 className="input-standard font-mono"
               />
-              <span className="text-xs text-[#666666]">
-                We send your confirmation link and 24h reminder to this number.
-              </span>
               {phoneError && (
                 <span className="text-xs text-red-600 font-semibold">
                   {phoneError}
