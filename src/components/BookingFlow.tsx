@@ -620,34 +620,30 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
             </div>
 
             {/* Payment Method & Accounts Details */}
-            <div className="flex flex-col gap-3 p-4 sm:p-5 rounded-xl bg-[#faf5ea] border-2 border-[#141414]">
-              <div className="flex items-center justify-between border-b border-[#141414]/15 pb-3">
+            <div className="flex flex-col gap-4 p-4 sm:p-5 rounded-2xl bg-white border border-[#e5e5e5] shadow-xs">
+              <div className="flex items-center justify-between border-b border-[#f0f0f3] pb-3.5">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#5b4cff] block">
-                    Payment Instructions
-                  </span>
-                  <h3 className="font-heading text-lg text-[#0f0f14]">
+                  <h3 className="font-heading text-lg font-bold text-[#0f0f14]">
                     Transfer Service Amount
                   </h3>
+                  <p className="text-xs text-[#666666] mt-0.5">
+                    Please transfer exactly <strong className="text-[#0f0f14]">{selectedService ? formatETB(selectedService.priceEtb) : ""}</strong> to either account below:
+                  </p>
                 </div>
                 {selectedService && (
-                  <div className="text-right">
-                    <span className="text-xs text-[#666666] block font-medium">Total Due:</span>
-                    <span className="font-heading text-xl font-bold text-[#5b4cff]">
+                  <div className="text-right shrink-0">
+                    <span className="text-[11px] text-[#777777] block font-medium">Total Due:</span>
+                    <span className="font-heading text-lg sm:text-xl font-bold text-[#5b4cff]">
                       {formatETB(selectedService.priceEtb)}
                     </span>
                   </div>
                 )}
               </div>
 
-              <p className="text-xs text-[#555555] leading-relaxed">
-                Please transfer exactly <strong className="text-[#0f0f14]">{selectedService ? formatETB(selectedService.priceEtb) : ""}</strong> to either of the accounts below, then upload the receipt screenshot:
-              </p>
-
               {/* Accounts Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {/* Telebirr Card */}
-                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
+                <div className="p-3.5 rounded-xl bg-[#fafafc] border border-[#e5e5e5] hover:border-[#d5d5df] transition-colors flex flex-col justify-between gap-3">
                   <div
                     role="button"
                     tabIndex={0}
@@ -668,15 +664,10 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#00a651]" />
-                      <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
-                        Telebirr Wallet
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-[#666666] bg-[#f0f0f3] px-1.5 py-0.5 rounded">
-                      Mobile Account
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#00a651] shrink-0" />
+                    <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
+                      Telebirr Wallet
                     </span>
                   </div>
 
@@ -685,12 +676,15 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                     <span className="font-mono text-sm sm:text-base font-bold text-[#0f0f14] tracking-wider block">
                       {TELEBIRR_NUMBER}
                     </span>
+                    <span className="text-[11px] text-[#555555] block mt-0.5">
+                      Name: <strong className="text-[#0f0f14]">{TELEBIRR_NAME}</strong>
+                    </span>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => handleCopy(TELEBIRR_NUMBER, "telebirr")}
-                    className="w-full text-xs font-semibold py-2 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
+                    className="w-full text-xs font-semibold py-2 px-2.5 rounded-lg bg-white border border-[#e0e0e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14] shadow-2xs"
                   >
                     {copiedKey === "telebirr" ? (
                       <>
@@ -707,7 +701,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                 </div>
 
                 {/* CBE Account Card */}
-                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
+                <div className="p-3.5 rounded-xl bg-[#fafafc] border border-[#e5e5e5] hover:border-[#d5d5df] transition-colors flex flex-col justify-between gap-3">
                   <div
                     role="button"
                     tabIndex={0}
@@ -728,15 +722,10 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#8c1d40]" />
-                      <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
-                        Commercial Bank of Ethiopia
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-[#666666] bg-[#f0f0f3] px-1.5 py-0.5 rounded">
-                      CBE Account
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#8c1d40] shrink-0" />
+                    <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
+                      Commercial Bank of Ethiopia
                     </span>
                   </div>
 
@@ -753,7 +742,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                   <button
                     type="button"
                     onClick={() => handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
-                    className="w-full text-xs font-semibold py-2 px-2 rounded-lg border border-[#e5e5e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14]"
+                    className="w-full text-xs font-semibold py-2 px-2.5 rounded-lg bg-white border border-[#e0e0e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14] shadow-2xs"
                   >
                     {copiedKey === "cbe" ? (
                       <>
@@ -771,10 +760,19 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
               </div>
 
               {/* Steps hint */}
-              <div className="text-[11px] text-[#666666] flex flex-col gap-0.5 pt-1">
-                <span>1. Open your Telebirr app or CBE Mobile Banking.</span>
-                <span>2. Send the exact amount ({selectedService ? formatETB(selectedService.priceEtb) : ""}) to either account above.</span>
-                <span>3. Take a screenshot of the transaction confirmation and upload it below.</span>
+              <div className="text-[11px] text-[#666666] flex flex-col gap-1 pt-1 border-t border-[#f0f0f3]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#f0f0f3] text-[#555555] font-semibold text-[10px] flex items-center justify-center shrink-0">1</span>
+                  <span>Open your Telebirr app or CBE Mobile Banking.</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#f0f0f3] text-[#555555] font-semibold text-[10px] flex items-center justify-center shrink-0">2</span>
+                  <span>Send the exact amount ({selectedService ? formatETB(selectedService.priceEtb) : ""}) to either account above.</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#f0f0f3] text-[#555555] font-semibold text-[10px] flex items-center justify-center shrink-0">3</span>
+                  <span>Take a screenshot of the transaction confirmation and upload it below.</span>
+                </div>
               </div>
             </div>
 
