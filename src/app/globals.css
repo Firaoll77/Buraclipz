@@ -476,3 +476,61 @@ body:has([data-admin-root]) #site-footer {
   display: none !important;
 }
 
+/* ─── HOLOGRAPHIC FOIL SHIMMER EFFECT ─────────────────── */
+@keyframes holographicShimmer {
+  0% {
+    left: -150%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
+}
+
+.holo-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  cursor: pointer;
+}
+
+.holo-card:hover, .holo-card:active, .holo-card.is-shimmering {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.22), 0 0 16px rgba(91, 76, 255, 0.2);
+}
+
+.holo-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -150%;
+  width: 80%;
+  height: 200%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.6) 45%,
+    rgba(180, 220, 255, 0.75) 50%,
+    rgba(255, 255, 255, 0.6) 55%,
+    rgba(255, 255, 255, 0.05) 80%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: overlay;
+}
+
+.holo-card:hover::after, .holo-card:active::after, .holo-card.is-shimmering::after {
+  animation: holographicShimmer 0.75s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+

@@ -91,12 +91,15 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
   const [uploading, setUploading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [shimmerCard, setShimmerCard] = useState<string | null>(null);
 
   const handleCopy = (text: string, key: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedKey(key);
+      setShimmerCard(key);
       setTimeout(() => setCopiedKey(null), 2000);
+      setTimeout(() => setShimmerCard(null), 850);
     }
   };
 
@@ -644,13 +647,25 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
               {/* Accounts Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 {/* Telebirr Card */}
-                <div className="p-3 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
-                  <div className="w-full aspect-[16/10] rounded-lg overflow-hidden border border-[#e5e5e5] shadow-xs bg-[#0b382c]">
+                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleCopy(TELEBIRR_NUMBER, "telebirr")}
+                    onKeyDown={(e) => e.key === "Enter" && handleCopy(TELEBIRR_NUMBER, "telebirr")}
+                    className={`holo-card group relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-[#e5e5e5] shadow-sm bg-[#0b382c] ${
+                      shimmerCard === "telebirr" ? "is-shimmering ring-2 ring-[#00a651]" : ""
+                    }`}
+                    aria-label="Tap card to copy Telebirr Number"
+                  >
                     <img
                       src="/images/telebirr-card.jpg"
                       alt="Telebirr Digital Wallet Card"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover scale-[1.20] transition-transform duration-300 group-hover:scale-[1.24]"
                     />
+                    <div className="absolute top-2 right-2 text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <CopyIcon size={11} /> Tap to Copy
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -692,13 +707,25 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                 </div>
 
                 {/* CBE Account Card */}
-                <div className="p-3 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
-                  <div className="w-full aspect-[16/10] rounded-lg overflow-hidden border border-[#e5e5e5] shadow-xs bg-[#161618]">
+                <div className="p-3.5 rounded-xl bg-white border border-[#e5e5e5] shadow-xs flex flex-col justify-between gap-3">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
+                    onKeyDown={(e) => e.key === "Enter" && handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
+                    className={`holo-card group relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-[#e5e5e5] shadow-sm bg-[#161618] ${
+                      shimmerCard === "cbe" ? "is-shimmering ring-2 ring-[#5b4cff]" : ""
+                    }`}
+                    aria-label="Tap card to copy CBE Account"
+                  >
                     <img
                       src="/images/cbe-card.jpg"
                       alt="Commercial Bank of Ethiopia Debit Card"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover scale-[1.20] transition-transform duration-300 group-hover:scale-[1.24]"
                     />
+                    <div className="absolute top-2 right-2 text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <CopyIcon size={11} /> Tap to Copy
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between">
