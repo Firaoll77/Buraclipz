@@ -64,12 +64,7 @@ export default function HomePage() {
       try {
         const res = await fetch("/api/services");
         const data = await res.json();
-        // Filter out unwanted services
-        const unwantedServiceIds = ["srv-combo", "srv-massage", "srv-executive"];
-        const filteredServices = (data.services || []).filter(
-          (s: Service) => !unwantedServiceIds.includes(s.id)
-        );
-        setServices(filteredServices);
+        setServices(data.services || []);
       } catch (err) {
         console.error("Failed to fetch services:", err);
       } finally {
@@ -149,7 +144,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {loading ? (
             <div className="py-16 text-center text-[#666666]">
               Loading services...

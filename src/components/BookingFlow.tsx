@@ -378,7 +378,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
             Step {step} of 3
           </span>
           <h2 className="text-xl sm:text-2xl font-bold text-[#0f0f14] leading-tight">
-            {step === 1 && "Choose Your Grooming Service"}
+            {step === 1 && "Choose Your Haircut"}
             {step === 2 && "Pick Date & Time"}
             {step === 3 && "Enter Your Details"}
           </h2>
@@ -407,7 +407,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
               Loading services...
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {services.map((service) => {
                 const isSelected = selectedService?.id === service.id;
                 return (
@@ -433,7 +433,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                         </span>
                       </div>
                       <p className="text-sm text-[#666666] leading-relaxed">
-                        {service.description || "Master grooming tailored to your style."}
+                        {service.description || "Precision haircut tailored to your style."}
                       </p>
                     </div>
 

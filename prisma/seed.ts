@@ -69,62 +69,42 @@ async function main() {
   }
 
   console.log("Seeding Services...");
-  const classicCut = await prisma.service.create({
+  const taper = await prisma.service.create({
     data: {
-      name: "Classic Haircut",
-      description: "Consultation, precision scissor & clipper cut, neck razor shave, styling.",
+      name: "Taper",
+      description: "Smooth fade only on the sideburns and back of the neck, keeping length on the sides.",
       durationMinutes: 40,
       priceEtb: 350,
       isActive: true,
     },
   });
 
-  const fadeCut = await prisma.service.create({
+  const fade = await prisma.service.create({
     data: {
-      name: "Skin Fade & Lineup",
-      description: "Crisp drop/taper/high skin fade with sharp razor contouring.",
-      durationMinutes: 45,
-      priceEtb: 400,
+      name: "Fade",
+      description: "Smooth transition from long hair on top down to skin on the sides and back.",
+      durationMinutes: 40,
+      priceEtb: 350,
       isActive: true,
     },
   });
 
-  const beardTrim = await prisma.service.create({
+  const cleanCut = await prisma.service.create({
     data: {
-      name: "Beard Sculpting & Hot Towel",
-      description: "Hot towel steam, organic beard oil treatment, precision razor edge trimming.",
+      name: "Clean Cut",
+      description: "Simple, neat trim all around with a clean neck line and a tidy finish.",
+      durationMinutes: 35,
+      priceEtb: 350,
+      isActive: true,
+    },
+  });
+
+  const lineUp = await prisma.service.create({
+    data: {
+      name: "Line Up",
+      description: "Sharp razor outline to make your hairline, temples, and neck look straight and neat.",
       durationMinutes: 25,
-      priceEtb: 200,
-      isActive: true,
-    },
-  });
-
-  const comboPackage = await prisma.service.create({
-    data: {
-      name: "Haircut + Beard Grooming Combo",
-      description: "Full precision haircut, beard trim with hot towel, and aftershave tonic.",
-      durationMinutes: 60,
-      priceEtb: 500,
-      isActive: true,
-    },
-  });
-
-  const headMassage = await prisma.service.create({
-    data: {
-      name: "Traditional Head Massage & Hair Wash",
-      description: "Invigorating scalp massage, herbal shampoo wash, and refreshing hair tonic.",
-      durationMinutes: 30,
-      priceEtb: 250,
-      isActive: true,
-    },
-  });
-
-  const executivePackage = await prisma.service.create({
-    data: {
-      name: "Executive VIP Grooming Package",
-      description: "Haircut, beard sculpting, scalp massage, herbal wash, and revitalizing facial scrub.",
-      durationMinutes: 80,
-      priceEtb: 750,
+      priceEtb: 350,
       isActive: true,
     },
   });
@@ -173,18 +153,18 @@ async function main() {
   tomorrow10am.setHours(10, 0, 0, 0);
 
   const tomorrow1040am = new Date(tomorrow10am);
-  tomorrow1040am.setMinutes(tomorrow1040am.getMinutes() + classicCut.durationMinutes);
+  tomorrow1040am.setMinutes(tomorrow1040am.getMinutes() + taper.durationMinutes);
 
   await prisma.appointment.create({
     data: {
       bookingReference: "ARB-1001",
       customerId: customer1.id,
       barberId: dawit.id,
-      serviceId: classicCut.id,
+      serviceId: taper.id,
       startTime: tomorrow10am,
       endTime: tomorrow1040am,
       status: AppointmentStatus.BOOKED,
-      priceEtb: classicCut.priceEtb,
+      priceEtb: taper.priceEtb,
       notes: "First time customer",
       cancellationToken: "token-demo-haile-1001",
     },
@@ -196,18 +176,18 @@ async function main() {
   yesterday2pm.setHours(14, 0, 0, 0);
 
   const yesterday3pm = new Date(yesterday2pm);
-  yesterday3pm.setMinutes(yesterday3pm.getMinutes() + comboPackage.durationMinutes);
+  yesterday3pm.setMinutes(yesterday3pm.getMinutes() + fade.durationMinutes);
 
   await prisma.appointment.create({
     data: {
       bookingReference: "ARB-0998",
       customerId: customer2.id,
       barberId: yohannes.id,
-      serviceId: comboPackage.id,
+      serviceId: fade.id,
       startTime: yesterday2pm,
       endTime: yesterday3pm,
       status: AppointmentStatus.COMPLETED,
-      priceEtb: comboPackage.priceEtb,
+      priceEtb: fade.priceEtb,
       notes: "Completed smoothly",
       cancellationToken: "token-demo-biruk-0998",
     },
