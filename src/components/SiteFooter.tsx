@@ -218,7 +218,7 @@ export default function SiteFooter() {
                 <PhoneIcon size={14} className="text-[#5b4cff] shrink-0" />
                 <span>Direct Phone: </span>
                 <a href="tel:+251 96 618 4635" className="text-[#5b4cff] font-semibold underline">
-                  +251 911 223 344
+                  +251 96 618 4635
                 </a>
               </p>
               <div className="w-full h-40 rounded-lg overflow-hidden border border-gray-700 mt-2">
