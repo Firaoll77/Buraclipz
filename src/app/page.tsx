@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ClockIcon } from "@/components/icons/Hugeicons";
 
@@ -15,6 +15,49 @@ interface Service {
 export default function HomePage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // 3D Zero-Gravity Cursor Tracking
+  const containerRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current || !logoRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    const rotateX = (-y / rect.height) * 30;
+    const rotateY = (x / rect.width) * 30;
+
+    logoRef.current.style.transform = `scale(1.12) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(30px)`;
+    logoRef.current.style.filter = "drop-shadow(0 0 25px rgba(138, 43, 226, 0.85)) drop-shadow(0 0 12px rgba(0, 245, 255, 0.7))";
+  };
+
+  const handleMouseLeave = () => {
+    if (!logoRef.current) return;
+    logoRef.current.style.transform = "scale(1) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+    logoRef.current.style.filter = "";
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!containerRef.current || !logoRef.current || !e.touches[0]) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left - rect.width / 2;
+    const y = touch.clientY - rect.top - rect.height / 2;
+
+    const rotateX = (-y / rect.height) * 25;
+    const rotateY = (x / rect.width) * 25;
+
+    logoRef.current.style.transform = `scale(1.12) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(30px)`;
+    logoRef.current.style.filter = "drop-shadow(0 0 25px rgba(138, 43, 226, 0.85)) drop-shadow(0 0 12px rgba(0, 245, 255, 0.7))";
+  };
+
+  const handleTouchEnd = () => {
+    if (!logoRef.current) return;
+    logoRef.current.style.transform = "scale(1) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+    logoRef.current.style.filter = "";
+  };
 
   useEffect(() => {
     async function fetchServices() {
@@ -38,15 +81,35 @@ export default function HomePage() {
 
   return (
     <main className="flex-1 flex flex-col gap-12 pb-12">
-      {/* Logo Section */}
+      {/* Logo Section - Zero-Gravity Quantum Core */}
       <div className="flex flex-col items-center justify-center pt-8 pb-2">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-32 h-32 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden border-4 border-[#5b4cff] shadow-lg">
-            <img
-              src="/logo.png"
-              alt="360°_Bladez logo"
-              className="w-full h-full object-cover"
-            />
+          <div
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className="antigravity-logo-container p-3 sm:p-4"
+            aria-label="360° Bladez 3D Quantum Core Logo"
+          >
+            {/* Faint drifting digital dust particles */}
+            <span className="quantum-particle-1 absolute -top-1 left-4 w-2 h-2 rounded-full bg-[#00f5ff]/60 blur-[1px] pointer-events-none" />
+            <span className="quantum-particle-2 absolute top-8 -right-2 w-2.5 h-2.5 rounded-full bg-[#8a2be2]/70 blur-[1px] pointer-events-none" />
+            <span className="quantum-particle-3 absolute -bottom-2 left-6 w-1.5 h-1.5 rounded-full bg-[#00f5ff]/70 blur-[1px] pointer-events-none" />
+            <span className="quantum-particle-1 absolute bottom-4 -right-1 w-2 h-2 rounded-full bg-[#8a2be2]/60 blur-[1px] pointer-events-none" />
+
+            {/* 3D Floating Logo */}
+            <div
+              ref={logoRef}
+              className="antigravity-logo-3d w-32 h-32 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden border-4 border-[#5b4cff] shadow-xl relative"
+            >
+              <img
+                src="/logo.png"
+                alt="360°_Bladez logo"
+                className="w-full h-full object-cover select-none pointer-events-none"
+              />
+            </div>
           </div>
           <span className="text-2xl sm:text-3xl font-bold text-[#0f0f14] tracking-tight">
             360°_Bladez 

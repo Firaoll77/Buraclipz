@@ -7,7 +7,7 @@ import {
 import { createAddisDateTime } from "../date-utils";
 
 describe("Availability Engine (slots = hours - breaks - time off - appointments + buffer)", () => {
-  const targetDate = "2026-11-10"; // A Tuesday in the future
+  const targetDate = "2026-12-15"; // A Tuesday in the future
 
   it("should generate available slots within working hours for an empty day", () => {
     const slots = calculateBarberDaySlots({

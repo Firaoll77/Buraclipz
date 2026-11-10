@@ -163,7 +163,7 @@ export default function SiteFooter() {
             </div>
           </div>
           <a
-            href="tel:+251911223344"
+            href="tel:+251 96 618 4635"
             className="text-xs font-semibold bg-[#5b4cff] hover:bg-[#4a3fe6] text-white px-3 py-1.5 rounded-lg shadow-sm"
           >
             Call Shop
