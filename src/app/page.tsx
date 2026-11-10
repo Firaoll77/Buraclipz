@@ -44,12 +44,12 @@ export default function HomePage() {
           <div className="w-32 h-32 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden border-4 border-[#5b4cff] shadow-lg">
             <img
               src="/logo.png"
-              alt="Buraclipz Logo"
+              alt="360°_Bladez logo"
               className="w-full h-full object-cover"
             />
           </div>
           <span className="text-2xl sm:text-3xl font-bold text-[#0f0f14] tracking-tight">
-            Buraclipz
+            360°_Bladez 
           </span>
         </div>
       </div>
