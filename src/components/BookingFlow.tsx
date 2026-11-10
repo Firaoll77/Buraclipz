@@ -108,7 +108,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
     async function initData() {
       try {
         setLoadingServices(true);
-        const srvRes = await fetch("/api/services");
+        const srvRes = await fetch("/api/services", { cache: "no-store" });
         const srvData = await srvRes.json();
 
         setServices(srvData.services || []);

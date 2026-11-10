@@ -379,33 +379,135 @@ export async function checkPrismaAvailable(): Promise<boolean> {
   }
 }
 
+const TARGET_HAIRCUTS = [
+  {
+    name: "Taper",
+    description: "Smooth fade only on the sideburns and back of the neck, keeping length on the sides.",
+    durationMinutes: 40,
+    priceEtb: 350,
+  },
+  {
+    name: "Fade",
+    description: "Smooth transition from long hair on top down to skin on the sides and back.",
+    durationMinutes: 40,
+    priceEtb: 350,
+  },
+  {
+    name: "Clean Cut",
+    description: "Simple, neat trim all around with a clean neck line and a tidy finish.",
+    durationMinutes: 35,
+    priceEtb: 350,
+  },
+  {
+    name: "Line Up",
+    description: "Sharp razor outline to make your hairline, temples, and neck look straight and neat.",
+    durationMinutes: 25,
+    priceEtb: 350,
+  },
+];
+
+const TARGET_HAIRCUT_NAMES = TARGET_HAIRCUTS.map((h) => h.name);
+
+function sortServices(services: ServiceData[]): ServiceData[] {
+  return [...services].sort((a, b) => {
+    const idxA = TARGET_HAIRCUT_NAMES.indexOf(a.name);
+    const idxB = TARGET_HAIRCUT_NAMES.indexOf(b.name);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return a.priceEtb - b.priceEtb;
+  });
+}
+
+async function syncDbServicesIfNeeded() {
+  try {
+    const existingActive = await prisma.service.findMany({ where: { isActive: true } });
+    const hasObsoleteActive = existingActive.some(
+      (s) => !TARGET_HAIRCUT_NAMES.includes(s.name)
+    );
+    const hasAllTargets = TARGET_HAIRCUT_NAMES.every((name) =>
+      existingActive.some((s) => s.name === name)
+    );
+
+    // If only the target haircuts are active and present, no DB changes needed
+    if (!hasObsoleteActive && hasAllTargets) {
+      return;
+    }
+
+    // 1. Deactivate old services (e.g. Beard Sculpting, Classic Haircut, etc.) that are not in target haircuts
+    await prisma.service.updateMany({
+      where: {
+        name: { notIn: TARGET_HAIRCUT_NAMES },
+        isActive: true,
+      },
+      data: {
+        isActive: false,
+      },
+    });
+
+    // 2. Fetch all services to see if any match the target haircuts by name
+    const allExisting = await prisma.service.findMany();
+
+    for (const hc of TARGET_HAIRCUTS) {
+      const match = allExisting.find(
+        (s) => s.name.trim().toLowerCase() === hc.name.trim().toLowerCase()
+      );
+      if (match) {
+        await prisma.service.update({
+          where: { id: match.id },
+          data: {
+            name: hc.name,
+            description: hc.description,
+            durationMinutes: hc.durationMinutes,
+            priceEtb: hc.priceEtb,
+            isActive: true,
+          },
+        });
+      } else {
+        await prisma.service.create({
+          data: {
+            name: hc.name,
+            description: hc.description,
+            durationMinutes: hc.durationMinutes,
+            priceEtb: hc.priceEtb,
+            isActive: true,
+          },
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Failed to auto-sync services to database:", err);
+  }
+}
+
 export async function getAllServices(): Promise<ServiceData[]> {
   if (await checkPrismaAvailable()) {
     try {
+      await syncDbServicesIfNeeded();
       const services = await prisma.service.findMany({
         where: { isActive: true },
-        orderBy: { priceEtb: "asc" },
       });
-      if (services.length > 0) return services;
+      if (services.length > 0) return sortServices(services);
     } catch {
       // fallback
     }
   }
-  return inMemoryServices.filter((s) => s.isActive);
+  return sortServices(inMemoryServices.filter((s) => s.isActive));
 }
 
 export async function getAllServicesForAdmin(): Promise<ServiceData[]> {
   if (await checkPrismaAvailable()) {
     try {
+      await syncDbServicesIfNeeded();
       const services = await prisma.service.findMany({
         orderBy: { priceEtb: "asc" },
       });
-      if (services.length > 0) return services;
+      if (services.length > 0) return sortServices(services);
     } catch {
       // fallback
     }
   }
-  return inMemoryServices;
+  return sortServices(inMemoryServices);
 }
 
 export async function getServiceById(id: string): Promise<ServiceData | null> {

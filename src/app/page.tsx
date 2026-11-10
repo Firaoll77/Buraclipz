@@ -62,7 +62,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const res = await fetch("/api/services");
+        const res = await fetch("/api/services", { cache: "no-store" });
         const data = await res.json();
         setServices(data.services || []);
       } catch (err) {
