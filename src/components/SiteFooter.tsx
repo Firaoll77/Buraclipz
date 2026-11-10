@@ -44,14 +44,14 @@ export default function SiteFooter() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-bold text-white tracking-tight leading-none">
-                    Buraclipz
+                    360°_Bladez 
                   </span>
                   <span className="bg-[#5b4cff]/20 text-[#a59bff] border border-[#5b4cff]/40 text-xs font-bold px-2 py-0.5 rounded-full">
                     ETB
                   </span>
                 </div>
                 <span className="text-sm text-gray-400 mt-1">
-                  Buraclipz &middot; Ayat 49
+                  360°_Bladez  &middot; Ayat 49
                 </span>
               </div>
             </div>
@@ -92,11 +92,11 @@ export default function SiteFooter() {
 
             <div className="pt-2 border-t border-gray-800/60 flex flex-col gap-2">
               <a
-                href="tel:+251911223344"
+                href="tel:+251 96 618 4635"
                 className="inline-flex items-center gap-2 text-sm text-[#5b4cff] hover:text-[#7d71ff] font-semibold"
               >
                 <PhoneIcon size={14} />
-                <span>+251 911 223 344</span>
+                <span>+251 96 618 4635</span>
               </a>
               <p className="text-[11px] text-gray-400">
                 Pay at shop: Cash, Telebirr &amp; CBE Birr
@@ -128,7 +128,7 @@ export default function SiteFooter() {
 
             <div className="w-full h-44 rounded-xl overflow-hidden border border-gray-800 shadow-sm mt-1">
               <iframe
-                title="Buraclipz Location Ayat 49"
+                title="360°_Bladez Location Ayat 49"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -142,7 +142,7 @@ export default function SiteFooter() {
 
         {/* Bottom Bar: Copyright */}
         <div className="pt-6 border-t border-gray-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
-          <p>© {year} Buraclipz. All rights reserved. Ayat 49, Addis Ababa, Ethiopia.</p>
+          <p>© {year} 360°_Bladez. All rights reserved. Ayat 49, Addis Ababa, Ethiopia.</p>
         </div>
       </div>
 
@@ -158,7 +158,7 @@ export default function SiteFooter() {
               BC
             </div>
             <div>
-              <span className="text-base font-bold text-white block leading-tight">Buraclipz</span>
+              <span className="text-base font-bold text-white block leading-tight">360°_Bladez</span>
               <span className="text-xs text-gray-400">Ayat 49, Addis Ababa</span>
             </div>
           </div>
@@ -217,13 +217,13 @@ export default function SiteFooter() {
               <p className="flex items-center gap-1.5">
                 <PhoneIcon size={14} className="text-[#5b4cff] shrink-0" />
                 <span>Direct Phone: </span>
-                <a href="tel:+251911223344" className="text-[#5b4cff] font-semibold underline">
+                <a href="tel:+251 96 618 4635" className="text-[#5b4cff] font-semibold underline">
                   +251 911 223 344
                 </a>
               </p>
               <div className="w-full h-40 rounded-lg overflow-hidden border border-gray-700 mt-2">
                 <iframe
-                  title="Buraclipz Map"
+                  title="360°_Bladez Map"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -278,7 +278,7 @@ export default function SiteFooter() {
 
         {/* Mobile Copyright Footer */}
         <div className="pt-3 text-center text-xs text-gray-400 border-t border-gray-800/60">
-          <p>© {year} Buraclipz &middot; Ayat 49 &middot; UTC+3</p>
+          <p>© {year} 360°_Bladez &middot; Ayat 49 &middot; UTC+3</p>
         </div>
       </div>
     </footer>

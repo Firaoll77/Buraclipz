@@ -133,7 +133,7 @@ export default function SiteHeader() {
           <div className="pt-4 mt-5 border-t border-[#333333] flex items-center justify-between text-xs text-gray-400 px-5">
             <a href="tel:+251911223344" className="hover:text-white transition-colors flex items-center gap-1.5">
               <PhoneIcon size={14} className="text-[#ff8442]" />
-              <span>+251 911 223 344</span>
+              <span>+251 96 618 4635</span>
             </a>
             <span className="text-gray-500">Ayat 49</span>
           </div>
