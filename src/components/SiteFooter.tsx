@@ -152,22 +152,16 @@ export default function SiteFooter() {
           ───────────────────────────────────────────────────────────── */}
       <div className="md:hidden w-full px-4 py-5 flex flex-col gap-3">
         {/* Compact Header */}
-        <div className="flex items-center justify-between py-1">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#5b4cff] text-white font-bold text-base flex items-center justify-center shadow-sm">
+        <div className="flex items-center py-1">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-[#5b4cff] text-white font-bold text-lg flex items-center justify-center shadow-sm">
               BC
             </div>
             <div>
-              <span className="text-base font-bold text-white block leading-tight">Bura Clipz</span>
+              <span className="text-lg font-bold text-white block leading-tight">Bura Clipz</span>
               <span className="text-xs text-gray-400">Ayat 49, Addis Ababa</span>
             </div>
           </div>
-          <a
-            href="tel:+251 96 618 4635"
-            className="text-xs font-semibold bg-[#5b4cff] hover:bg-[#4a3fe6] text-white px-3 py-1.5 rounded-lg shadow-sm"
-          >
-            Call Shop
-          </a>
         </div>
 
         {/* Accordion 1: Quick Links */}
@@ -194,7 +188,74 @@ export default function SiteFooter() {
           )}
         </div>
 
-        {/* Accordion 2: Shop Location & Directions */}
+        {/* Accordion 2: Contact Us */}
+        <div className="border border-gray-800 rounded-xl overflow-hidden bg-[#16161f]">
+          <button
+            onClick={() => toggleSection("contact")}
+            className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-200"
+            aria-expanded={openSection === "contact"}
+          >
+            <span className="flex items-center gap-2">
+              <PhoneIcon size={16} className="text-[#a59bff]" />
+              Contact Us
+            </span>
+            <span className="text-base font-bold text-[#5b4cff]">
+              {openSection === "contact" ? "−" : "+"}
+            </span>
+          </button>
+          {openSection === "contact" && (
+            <div className="px-4 pb-4 pt-2 border-t border-gray-800/60 text-xs text-gray-300 space-y-2.5">
+              <div className="flex flex-col gap-1.5">
+                <p className="flex items-center gap-1.5">
+                  <PhoneIcon size={14} className="text-[#5b4cff] shrink-0" />
+                  <span>Direct Phone:</span>
+                </p>
+                <a
+                  href="tel:+251 96 618 4635"
+                  className="flex items-center justify-center gap-2 bg-[#5b4cff] hover:bg-[#4a3fe6] text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-colors active:scale-95"
+                >
+                  <PhoneIcon size={16} />
+                  <span>+251 96 618 4635</span>
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Accordion 3: Shop Hours & Payment */}
+        <div className="border border-gray-800 rounded-xl overflow-hidden bg-[#16161f]">
+          <button
+            onClick={() => toggleSection("payment")}
+            className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-200"
+            aria-expanded={openSection === "payment"}
+          >
+            <span className="flex items-center gap-2">
+              <ClockIcon size={16} className="text-[#a59bff]" />
+              Shop Hours &amp; Payment
+            </span>
+            <span className="text-base font-bold text-[#5b4cff]">
+              {openSection === "payment" ? "−" : "+"}
+            </span>
+          </button>
+          {openSection === "payment" && (
+            <div className="px-4 pb-4 pt-2 border-t border-gray-800/60 text-xs text-gray-300 space-y-2">
+              <p className="text-gray-400">
+                • <strong className="text-white">Pay at shop:</strong> Cash, Telebirr, or CBE Birr.
+              </p>
+              <p className="text-gray-400">
+                • <strong className="text-white">Mon &ndash; Sat:</strong> 9:00 AM &ndash; 8:00 PM.
+              </p>
+              <p className="text-gray-400">
+                • <strong className="text-white">Sunday:</strong> 10:00 AM &ndash; 6:00 PM.
+              </p>
+              <p className="text-gray-400">
+                • <strong className="text-white">Currency:</strong> Ethiopian Birr (ETB).
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Accordion 4: Shop Location & Directions */}
         <div className="border border-gray-800 rounded-xl overflow-hidden bg-[#16161f]">
           <button
             onClick={() => toggleSection("location")}
@@ -213,13 +274,6 @@ export default function SiteFooter() {
             <div className="px-4 pb-4 pt-2 border-t border-gray-800/60 text-xs text-gray-300 space-y-2.5">
               <p className="text-gray-400">
                 Ayat 49, Yeka Sub-City, Addis Ababa, Ethiopia
-              </p>
-              <p className="flex items-center gap-1.5">
-                <PhoneIcon size={14} className="text-[#5b4cff] shrink-0" />
-                <span>Direct Phone: </span>
-                <a href="tel:+251 96 618 4635" className="text-[#5b4cff] font-semibold underline">
-                  +251 96 618 4635
-                </a>
               </p>
               <div className="w-full h-40 rounded-lg overflow-hidden border border-gray-700 mt-2">
                 <iframe
@@ -242,36 +296,6 @@ export default function SiteFooter() {
                   Open in Google Maps ↗
                 </a>
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* Accordion 3: Payments & Hours */}
-        <div className="border border-gray-800 rounded-xl overflow-hidden bg-[#16161f]">
-          <button
-            onClick={() => toggleSection("payment")}
-            className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-200"
-            aria-expanded={openSection === "payment"}
-          >
-            <span>Payment &amp; Shop Hours</span>
-            <span className="text-base font-bold text-[#5b4cff]">
-              {openSection === "payment" ? "−" : "+"}
-            </span>
-          </button>
-          {openSection === "payment" && (
-            <div className="px-4 pb-4 pt-2 border-t border-gray-800/60 text-xs text-gray-300 space-y-2">
-              <p className="text-gray-400">
-                • <strong className="text-white">Pay at shop:</strong> Cash, Telebirr, or CBE Birr.
-              </p>
-              <p className="text-gray-400">
-                • <strong className="text-white">Mon &ndash; Sat:</strong> 9:00 AM &ndash; 8:00 PM.
-              </p>
-              <p className="text-gray-400">
-                • <strong className="text-white">Sunday:</strong> 10:00 AM &ndash; 6:00 PM.
-              </p>
-              <p className="text-gray-400">
-                • <strong className="text-white">Currency:</strong> Ethiopian Birr (ETB).
-              </p>
             </div>
           )}
         </div>
