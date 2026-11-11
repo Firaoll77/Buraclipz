@@ -6,11 +6,12 @@ import { formatETB, formatDualDate, toEthiopianDate } from "@/lib/ethiopian-cale
 import { validateEthiopianPhone, formatEthiopianPhone } from "@/lib/phone";
 import { getAddisDateString } from "@/lib/date-utils";
 import { ClockIcon, CheckmarkIcon, CloseIcon, CopyIcon } from "@/components/icons/Hugeicons";
+import PaymentCard from "@/components/PaymentCard";
 
-const TELEBIRR_NUMBER = process.env.NEXT_PUBLIC_TELEBIRR_NUMBER || "+251 96 771 0870";
-const TELEBIRR_NAME = process.env.NEXT_PUBLIC_TELEBIRR_NAME || "FIRAOL BAYISA";
-const CBE_ACCOUNT = process.env.NEXT_PUBLIC_CBE_ACCOUNT || "1000 4589 2310 9874";
-const CBE_NAME = process.env.NEXT_PUBLIC_CBE_NAME || "FIRAOL BAYISA";
+const TELEBIRR_NUMBER = process.env.NEXT_PUBLIC_TELEBIRR_NUMBER || "+251 966 184 635";
+const TELEBIRR_NAME = process.env.NEXT_PUBLIC_TELEBIRR_NAME || "Bekan";
+const CBE_ACCOUNT = process.env.NEXT_PUBLIC_CBE_ACCOUNT || "1000443894393";
+const CBE_NAME = process.env.NEXT_PUBLIC_CBE_NAME || "Hirut Shelemew Megersa";
 
 interface Service {
   id: string;
@@ -91,15 +92,12 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
   const [uploading, setUploading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [shimmerCard, setShimmerCard] = useState<string | null>(null);
 
   const handleCopy = (text: string, key: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedKey(key);
-      setShimmerCard(key);
       setTimeout(() => setCopiedKey(null), 2000);
-      setTimeout(() => setShimmerCard(null), 850);
     }
   };
 
@@ -640,137 +638,26 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                 )}
               </div>
 
-              {/* Accounts Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {/* Telebirr Card */}
-                <div className="p-3.5 rounded-xl bg-[#fafafc] border border-[#e5e5e5] hover:border-[#d5d5df] transition-colors flex flex-col justify-between gap-3">
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => handleCopy(TELEBIRR_NUMBER, "telebirr")}
-                    onKeyDown={(e) => e.key === "Enter" && handleCopy(TELEBIRR_NUMBER, "telebirr")}
-                    className={`holo-card group relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-[#e5e5e5] shadow-sm bg-[#0b382c] ${
-                      shimmerCard === "telebirr" ? "is-shimmering ring-2 ring-[#00a651]" : ""
-                    }`}
-                    aria-label="Tap card to copy Telebirr Number"
-                  >
-                    <img
-                      src="/images/telebirr-card.jpg"
-                      alt="Telebirr Digital Wallet Card"
-                      className="w-full h-full object-cover scale-[1.20] transition-transform duration-300 group-hover:scale-[1.24]"
-                    />
-                    <div className="absolute top-2 right-2 text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <CopyIcon size={11} /> Tap to Copy
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#00a651] shrink-0" />
-                    <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
-                      Telebirr Wallet
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="text-[11px] text-[#777777] block">Phone / Account:</span>
-                    <span className="font-mono text-sm sm:text-base font-bold text-[#0f0f14] tracking-wider block">
-                      {TELEBIRR_NUMBER}
-                    </span>
-                    <span className="text-[11px] text-[#555555] block mt-0.5">
-                      Name: <strong className="text-[#0f0f14]">{TELEBIRR_NAME}</strong>
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(TELEBIRR_NUMBER, "telebirr")}
-                    className="w-full text-xs font-semibold py-2 px-2.5 rounded-lg bg-white border border-[#e0e0e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14] shadow-2xs"
-                  >
-                    {copiedKey === "telebirr" ? (
-                      <>
-                        <CheckmarkIcon size={14} className="text-green-600" />
-                        <span className="text-green-600 font-bold">Copied to Clipboard!</span>
-                      </>
-                    ) : (
-                      <>
-                        <CopyIcon size={14} className="text-[#666666]" />
-                        <span>Copy Telebirr Number</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                {/* CBE Account Card */}
-                <div className="p-3.5 rounded-xl bg-[#fafafc] border border-[#e5e5e5] hover:border-[#d5d5df] transition-colors flex flex-col justify-between gap-3">
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
-                    onKeyDown={(e) => e.key === "Enter" && handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
-                    className={`holo-card group relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-[#e5e5e5] shadow-sm bg-[#161618] ${
-                      shimmerCard === "cbe" ? "is-shimmering ring-2 ring-[#5b4cff]" : ""
-                    }`}
-                    aria-label="Tap card to copy CBE Account"
-                  >
-                    <img
-                      src="/images/cbe-card.jpg"
-                      alt="Commercial Bank of Ethiopia Debit Card"
-                      className="w-full h-full object-cover scale-[1.20] transition-transform duration-300 group-hover:scale-[1.24]"
-                    />
-                    <div className="absolute top-2 right-2 text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded-full bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <CopyIcon size={11} /> Tap to Copy
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#8c1d40] shrink-0" />
-                    <span className="font-bold text-xs text-[#0f0f14] tracking-wide">
-                      Commercial Bank of Ethiopia
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="text-[11px] text-[#777777] block">Account Number:</span>
-                    <span className="font-mono text-sm sm:text-base font-bold text-[#0f0f14] tracking-wider block">
-                      {CBE_ACCOUNT}
-                    </span>
-                    <span className="text-[11px] text-[#555555] block mt-0.5">
-                      Name: <strong className="text-[#0f0f14]">{CBE_NAME}</strong>
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(CBE_ACCOUNT.replace(/\s+/g, ""), "cbe")}
-                    className="w-full text-xs font-semibold py-2 px-2.5 rounded-lg bg-white border border-[#e0e0e5] hover:bg-[#f5f5f8] transition-colors flex items-center justify-center gap-1.5 text-[#0f0f14] shadow-2xs"
-                  >
-                    {copiedKey === "cbe" ? (
-                      <>
-                        <CheckmarkIcon size={14} className="text-green-600" />
-                        <span className="text-green-600 font-bold">Copied to Clipboard!</span>
-                      </>
-                    ) : (
-                      <>
-                        <CopyIcon size={14} className="text-[#666666]" />
-                        <span>Copy CBE Account</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
+              {/* Interactive Dual-Sided Payment Card */}
+              <PaymentCard
+                cbeAccount={CBE_ACCOUNT}
+                cbeName={CBE_NAME}
+                telebirrNumber={TELEBIRR_NUMBER}
+                telebirrName={TELEBIRR_NAME}
+              />
 
               {/* Steps hint */}
-              <div className="text-[11px] text-[#666666] flex flex-col gap-1 pt-1 border-t border-[#f0f0f3]">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#f0f0f3] text-[#555555] font-semibold text-[10px] flex items-center justify-center shrink-0">1</span>
+              <div className="p-4 rounded-xl bg-[#f5f5f8] border border-[#e5e5e5] text-[11px] text-[#333333] flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-[#5b4cff] text-white font-semibold text-[11px] flex items-center justify-center shrink-0">1</span>
                   <span>Open your Telebirr app or CBE Mobile Banking.</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#f0f0f3] text-[#555555] font-semibold text-[10px] flex items-center justify-center shrink-0">2</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-[#5b4cff] text-white font-semibold text-[11px] flex items-center justify-center shrink-0">2</span>
                   <span>Send the exact amount ({selectedService ? formatETB(selectedService.priceEtb) : ""}) to either account above.</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#f0f0f3] text-[#555555] font-semibold text-[10px] flex items-center justify-center shrink-0">3</span>
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-[#5b4cff] text-white font-semibold text-[11px] flex items-center justify-center shrink-0">3</span>
                   <span>Take a screenshot of the transaction confirmation and upload it below.</span>
                 </div>
               </div>

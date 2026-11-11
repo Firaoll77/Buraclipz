@@ -67,10 +67,6 @@ export default function SiteFooter() {
               <Link href="/book" className="text-[#a59bff] font-semibold hover:underline">
                 Book Appointment
               </Link>
-              <span className="text-gray-700">&bull;</span>
-              <Link href="/location" className="hover:text-white transition-colors">
-                Directions
-              </Link>
             </nav>
           </div>
 
@@ -183,7 +179,6 @@ export default function SiteFooter() {
             <div className="px-4 pb-4 pt-2 border-t border-gray-800/60 grid grid-cols-2 gap-2.5 text-sm text-gray-400">
               <Link href="/" className="hover:text-white">Home Page</Link>
               <Link href="/book" className="text-[#a59bff] font-semibold">Book Now</Link>
-              <Link href="/services" className="hover:text-white">Services &amp; Pricing</Link>
             </div>
           )}
         </div>
