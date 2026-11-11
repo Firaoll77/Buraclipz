@@ -101,13 +101,13 @@ export default function HomePage() {
             >
               <img
                 src="/bc.png"
-                alt="Bura Clipz  logo"
-                className="w-full h-full object-cover select-none pointer-events-none"
+                alt="Bura Clipz logo"
+                className="w-full h-full object-cover scale-[1.08] select-none pointer-events-none"
               />
             </div>
           </div>
           <span className="text-2xl sm:text-3xl font-bold text-[#0f0f14] tracking-tight">
-            Bura Clipz  
+            Bura Clipz
           </span>
         </div>
       </div>
