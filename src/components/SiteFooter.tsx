@@ -44,14 +44,14 @@ export default function SiteFooter() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <span className="text-xl font-bold text-white tracking-tight leading-none">
-                    360°_Bladez 
+                    Bura Clipz  
                   </span>
                   <span className="bg-[#5b4cff]/20 text-[#a59bff] border border-[#5b4cff]/40 text-xs font-bold px-2 py-0.5 rounded-full">
                     ETB
                   </span>
                 </div>
                 <span className="text-sm text-gray-400 mt-1">
-                  360°_Bladez  &middot; Ayat 49
+                  Bura Clipz  &middot; Ayat 49
                 </span>
               </div>
             </div>
@@ -128,7 +128,7 @@ export default function SiteFooter() {
 
             <div className="w-full h-44 rounded-xl overflow-hidden border border-gray-800 shadow-sm mt-1">
               <iframe
-                title="360°_Bladez Location Ayat 49"
+                title="Bura Clipz Location Ayat 49"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -142,7 +142,7 @@ export default function SiteFooter() {
 
         {/* Bottom Bar: Copyright */}
         <div className="pt-6 border-t border-gray-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
-          <p>© {year} 360°_Bladez. All rights reserved. Ayat 49, Addis Ababa, Ethiopia.</p>
+          <p>© {year} Bura Clipz. All rights reserved. Ayat 49, Addis Ababa, Ethiopia.</p>
         </div>
       </div>
 
@@ -158,7 +158,7 @@ export default function SiteFooter() {
               BC
             </div>
             <div>
-              <span className="text-base font-bold text-white block leading-tight">360°_Bladez</span>
+              <span className="text-base font-bold text-white block leading-tight">Bura Clipz</span>
               <span className="text-xs text-gray-400">Ayat 49, Addis Ababa</span>
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function SiteFooter() {
               </p>
               <div className="w-full h-40 rounded-lg overflow-hidden border border-gray-700 mt-2">
                 <iframe
-                  title="360°_Bladez Map"
+                  title="Bura Clipz Map"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -278,7 +278,7 @@ export default function SiteFooter() {
 
         {/* Mobile Copyright Footer */}
         <div className="pt-3 text-center text-xs text-gray-400 border-t border-gray-800/60">
-          <p>© {year} 360°_Bladez &middot; Ayat 49 &middot; UTC+3</p>
+          <p>© {year} Bura Clipz &middot; Ayat 49 &middot; UTC+3</p>
         </div>
       </div>
     </footer>

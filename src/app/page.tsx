@@ -100,14 +100,14 @@ export default function HomePage() {
               className="antigravity-logo-3d w-32 h-32 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden border-4 border-[#5b4cff] shadow-xl relative"
             >
               <img
-                src="/logo.png"
-                alt="360°_Bladez logo"
+                src="/bc.png"
+                alt="Bura Clipz  logo"
                 className="w-full h-full object-cover select-none pointer-events-none"
               />
             </div>
           </div>
           <span className="text-2xl sm:text-3xl font-bold text-[#0f0f14] tracking-tight">
-            360°_Bladez 
+            Bura Clipz  
           </span>
         </div>
       </div>
