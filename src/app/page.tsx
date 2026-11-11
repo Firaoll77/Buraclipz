@@ -60,18 +60,29 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+    let mounted = true;
     async function fetchServices() {
       try {
         const res = await fetch("/api/services", { cache: "no-store" });
         const data = await res.json();
-        setServices(data.services || []);
+        if (mounted) {
+          // Deduplicate services by ID to prevent duplicates
+          const uniqueServices = (data.services || []).filter(
+            (service: Service, index: number, self: Service[]) =>
+              index === self.findIndex((s) => s.id === service.id)
+          );
+          setServices(uniqueServices);
+        }
       } catch (err) {
         console.error("Failed to fetch services:", err);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
     fetchServices();
+    return () => { mounted = false; };
   }, []);
 
   return (

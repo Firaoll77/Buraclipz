@@ -135,15 +135,6 @@ const MEMORY_SERVICES: ServiceData[] = [
     priceEtb: 350,
     isActive: true,
   },
-  // Legacy service kept for test backward-compatibility
-  {
-    id: "srv-classic-cut",
-    name: "Classic Haircut",
-    description: "Consultation, precision scissor & clipper cut, razor neck trim, styling.",
-    durationMinutes: 40,
-    priceEtb: 350,
-    isActive: false,
-  },
 ];
 
 // Default shop hours: Mon-Sat 09:00 - 20:00 (Break 13:00 - 14:00), Sun 10:00 - 18:00
