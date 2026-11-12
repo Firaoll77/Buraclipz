@@ -477,16 +477,19 @@ export default function BookingsPage() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-sm" style={{ color: "#000" }}>{appt.customerName}</p>
-                              <p className="text-xs" style={{ color: "#444" }}>
+                              <p className="text-xs" style={{ color: "#666" }}>
+                                Phone: {appt.customerPhone}
+                              </p>
+                              <p className="text-xs" style={{ color: "#444" }}">
                                 {appt.serviceName} &middot; {appt.durationMinutes}min &middot; {appt.priceEtb} ETB
                               </p>
                               <p className="text-xs" style={{ color: "#666" }}>
-                                {appt.barberName} &middot; {appt.customerPhone}
+                                {appt.barberName}
                               </p>
                               <p className="text-xs" style={{ color: "#888" }}>
                                 Booked: {formatDateTime(appt.createdAt)}
                               </p>
-                              {appt.paymentScreenshot && (
+                              {appt.paymentScreenshot && appt.paymentScreenshot.trim() !== "" && (
                                 <div className="mt-2">
                                   <img
                                     src={appt.paymentScreenshot}
@@ -577,16 +580,19 @@ export default function BookingsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm" style={{ color: "#000" }}>{appt.customerName}</p>
+                    <p className="text-xs" style={{ color: "#666" }}>
+                      Phone: {appt.customerPhone}
+                    </p>
                     <p className="text-xs" style={{ color: "#444" }}>
                       {appt.serviceName} &middot; {appt.durationMinutes}min &middot; {appt.priceEtb} ETB
                     </p>
                     <p className="text-xs" style={{ color: "#666" }}>
-                      {appt.barberName} &middot; {appt.customerPhone}
+                      {appt.barberName}
                     </p>
                     <p className="text-xs" style={{ color: "#888" }}>
                       Booked: {formatDateTime(appt.createdAt)}
                     </p>
-                    {appt.paymentScreenshot && (
+                    {appt.paymentScreenshot && appt.paymentScreenshot.trim() !== "" && (
                       <div className="mt-2">
                         <img
                           src={appt.paymentScreenshot}

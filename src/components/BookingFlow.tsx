@@ -77,6 +77,8 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [servicesError, setServicesError] = useState(false);
+  const [slotsError, setSlotsError] = useState(false);
 
   // Selection states
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -106,6 +108,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
     async function initData() {
       try {
         setLoadingServices(true);
+        setServicesError(false);
         const srvRes = await fetch("/api/services", { cache: "no-store" });
         const srvData = await srvRes.json();
 
@@ -126,6 +129,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
         setSelectedDate(getAddisDateString(tomorrow));
       } catch (err) {
         console.error("Failed to load initial booking data", err);
+        setServicesError(true);
         setErrorMsg("Failed to load services. Please refresh the page.");
       } finally {
         setLoadingServices(false);
@@ -141,6 +145,7 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
     async function fetchSlots() {
       try {
         setLoadingSlots(true);
+        setSlotsError(false);
         setErrorMsg(null);
         setSelectedSlot(null);
 
@@ -158,7 +163,8 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
         setSlots(data.slots || []);
       } catch (err: any) {
         console.error("Availability fetch error:", err);
-        setErrorMsg(err.message || "Failed to retrieve open slots");
+        setSlotsError(true);
+        setErrorMsg(err.message || "Failed to retrieve open slots. Please try selecting a different date.");
       } finally {
         setLoadingSlots(false);
       }
@@ -294,17 +300,41 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
         <p className="text-sm text-[#666666] mt-3">
           Your appointment has been secured at Buraclipz, Ayat 49.
         </p>
-        <button
-          onClick={() => {
-            setBookingSuccess(false);
-            setStep(1);
-            setSelectedSlot(null);
-            setSelectedService(null);
-          }}
-          className="btn-secondary w-full mt-6"
-        >
-          Book Another Appointment
-        </button>
+        <div className="flex flex-col sm:flex-row gap-3 mt-6">
+          <Link
+            href="/"
+            className="btn-secondary flex-1"
+          >
+            Back to Home
+          </Link>
+          <button
+            onClick={() => {
+              setBookingSuccess(false);
+              setStep(1);
+              setSelectedSlot(null);
+              setSelectedService(null);
+            }}
+            className="btn-primary flex-1"
+          >
+            Book Another Appointment
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ================= LOADING STATE =================
+  if (loadingServices) {
+    return (
+      <div className="card-light p-4 sm:p-6 flex flex-col gap-6">
+        <div className="flex flex-col gap-3 pb-4 border-b border-[#e5e5e5]">
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+          <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="flex flex-col gap-3 items-center justify-center py-12">
+          <div className="w-12 h-12 border-4 border-[#5b4cff] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-[#666666] font-medium">Loading services...</p>
+        </div>
       </div>
     );
   }
@@ -402,7 +432,21 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
         <div className="flex flex-col gap-6">
           {loadingServices ? (
             <div className="py-16 text-center text-[#666666]">
-              Loading services...
+              <div className="w-12 h-12 border-4 border-[#5b4cff] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p>Loading services...</p>
+            </div>
+          ) : servicesError ? (
+            <div className="py-16 text-center">
+              <div className="w-16 h-16 mx-auto rounded-full bg-red-100 flex items-center justify-center mb-4">
+                <span className="text-3xl">⚠️</span>
+              </div>
+              <p className="text-sm text-[#666666] mb-4">Failed to load services</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="btn-secondary text-sm"
+              >
+                Retry
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -517,7 +561,15 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
 
             {loadingSlots ? (
               <div className="py-12 text-center text-[#666666]">
-                Checking availability...
+                <div className="w-12 h-12 border-4 border-[#5b4cff] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p>Checking availability...</p>
+              </div>
+            ) : slotsError ? (
+              <div className="p-4 text-center rounded-lg bg-red-50 border border-red-200">
+                <p className="text-base font-semibold text-red-700">Failed to load available slots</p>
+                <p className="text-sm text-red-600 mt-2">
+                  Please try selecting a different date or refresh the page.
+                </p>
               </div>
             ) : slots.length === 0 ? (
               <div className="p-4 text-center rounded-lg bg-white border border-[#e5e5e5]">
@@ -721,10 +773,13 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
 
             <button
               type="submit"
-              className="btn-primary w-full mt-4"
-              disabled={!paymentScreenshot || uploading}
+              className="btn-primary w-full mt-4 flex items-center justify-center gap-2"
+              disabled={!paymentScreenshot || uploading || submitting}
             >
-              {uploading ? "Uploading..." : submitting ? "Booking..." : "Book Appointment →"}
+              {(uploading || submitting) && (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              )}
+              {uploading ? "Uploading payment screenshot..." : submitting ? "Confirming your booking..." : "Book Appointment →"}
             </button>
           </form>
         </div>
