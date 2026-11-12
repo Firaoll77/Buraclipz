@@ -480,8 +480,8 @@ export default function BookingsPage() {
                               <p className="text-xs" style={{ color: "#666" }}>
                                 Phone: {appt.customerPhone}
                               </p>
-                              <p className="text-xs" style={{ color: "#444" }}">
-                                {appt.serviceName} ({appt.durationMinutes}min, {appt.priceEtb} ETB)
+                              <p className="text-xs" style={{ color: "#444" }}>
+                                {appt.serviceName} {appt.durationMinutes}min {appt.priceEtb} ETB
                               </p>
                               <p className="text-xs" style={{ color: "#666" }}>
                                 {appt.barberName}
@@ -584,7 +584,7 @@ export default function BookingsPage() {
                       Phone: {appt.customerPhone}
                     </p>
                     <p className="text-xs" style={{ color: "#444" }}>
-                      {appt.serviceName} ({appt.durationMinutes}min, {appt.priceEtb} ETB)
+                      {appt.serviceName} {appt.durationMinutes}min {appt.priceEtb} ETB
                     </p>
                     <p className="text-xs" style={{ color: "#666" }}>
                       {appt.barberName}
@@ -692,7 +692,7 @@ export default function BookingsPage() {
                 <p className="text-xs font-medium" style={{ color: "#888" }}>Service</p>
                 <p className="text-sm font-semibold" style={{ color: "#000" }}>{selectedAppointment.serviceName}</p>
                 <p className="text-sm" style={{ color: "#666" }}>
-                  {selectedAppointment.durationMinutes} min, {selectedAppointment.priceEtb} ETB
+                  {selectedAppointment.durationMinutes} min {selectedAppointment.priceEtb} ETB
                 </p>
               </div>
               
