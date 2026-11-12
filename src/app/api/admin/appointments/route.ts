@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import {
-  getAllBarbers,
-  getAllServices,
   getBarberById,
   getServiceById,
-  getBarberAppointmentsForDay,
   inMemoryAppointments,
   AppointmentData,
   checkPrismaAvailable,
   saveStoredAppointments,
 } from "@/lib/data-store";
-import { getAddisDateString } from "@/lib/date-utils";
 import { validateEthiopianPhone } from "@/lib/phone";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -34,129 +30,81 @@ export async function GET(request: NextRequest) {
   const barberId = searchParams.get("barberId");
   const status = searchParams.get("status");
 
-  const barbers = await getAllBarbers();
-  const targetBarbers = barberId
-    ? barbers.filter((b) => b.id === barberId)
-    : barbers;
+  const filterByDate = Boolean(date && date !== "all");
+  const { start, end } = filterByDate
+    ? dayBounds(date as string)
+    : { start: new Date(0), end: new Date(0) };
 
   let all: AppointmentData[] = [];
 
-  // If no date specified or 'all', return all bookings
-  if (!date || date === "all") {
-    console.log("Fetching all appointments. In-memory count:", inMemoryAppointments.length);
+  const inMemoryAppts = inMemoryAppointments.filter((a) => {
+    const matchBarber = !barberId || a.barberId === barberId;
+    const matchStatus = !status || a.status === status;
+    const matchDate =
+      !filterByDate ||
+      (new Date(a.startTime) >= start && new Date(a.startTime) <= end);
+    return matchBarber && matchStatus && matchDate;
+  });
 
-    const inMemoryAppts = inMemoryAppointments.filter((a) => {
-      const matchBarber = !barberId || a.barberId === barberId;
-      const matchStatus = !status || a.status === status;
-      return matchBarber && matchStatus;
+  for (const a of inMemoryAppts) {
+    const barber = await getBarberById(a.barberId);
+    const service = await getServiceById(a.serviceId);
+    all.push({
+      ...a,
+      barberName: barber?.name || a.barberName || "Unknown Barber",
+      barberColor: barber?.color || "#ff9800",
+      serviceName: service?.name || a.serviceName || "Unknown Service",
+      durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
     });
+  }
 
-    for (const a of inMemoryAppts) {
-      const barber = await getBarberById(a.barberId);
-      const service = await getServiceById(a.serviceId);
-      all.push({
-        ...a,
-        barberName: barber?.name || a.barberName || "Unknown Barber",
-        barberColor: barber?.color || "#ff9800",
-        serviceName: service?.name || a.serviceName || "Unknown Service",
-        durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
+  if (await checkPrismaAvailable()) {
+    try {
+      const whereClause: any = {};
+      if (status) whereClause.status = status;
+      if (barberId) whereClause.barberId = barberId;
+      if (filterByDate) {
+        whereClause.startTime = { gte: start, lte: end };
+      }
+
+      const dbAppointments = await prisma.appointment.findMany({
+        where: whereClause,
+        include: { customer: true, barber: true, service: true },
       });
-    }
 
-    if (await checkPrismaAvailable()) {
-      try {
-        const whereClause: any = {};
-        if (status) whereClause.status = status;
-        if (barberId) whereClause.barberId = barberId;
-
-        const dbAppointments = await prisma.appointment.findMany({
-          where: whereClause,
-          include: { customer: true, barber: true, service: true },
-        });
-
-        const existingIds = new Set(all.map((a) => a.id));
-        for (const a of dbAppointments) {
-          if (!existingIds.has(a.id)) {
-            all.push({
-              id: a.id,
-              bookingReference: a.bookingReference,
-              customerId: a.customerId,
-              customerName: a.customer.name,
-              customerPhone: a.customer.phone,
-              customerEmail: a.customer.email,
-              telegramChatId: a.customer.telegramChatId,
-              barberId: a.barberId,
-              barberName: a.barber.name,
-              serviceId: a.serviceId,
-              serviceName: a.service.name,
-              durationMinutes: a.service.durationMinutes,
-              startTime: a.startTime,
-              endTime: a.endTime,
-              status: a.status as "BOOKED" | "CANCELLED" | "COMPLETED",
-              priceEtb: a.priceEtb,
-              notes: a.notes,
-              cancellationToken: a.cancellationToken,
-              cancellationReason: a.cancellationReason,
-              cancelledAt: a.cancelledAt,
-              createdAt: a.createdAt,
-              updatedAt: a.updatedAt,
-              paymentScreenshot: a.paymentScreenshot,
-            });
-          }
+      const existingIds = new Set(all.map((a) => a.id));
+      for (const a of dbAppointments) {
+        if (!existingIds.has(a.id)) {
+          all.push({
+            id: a.id,
+            bookingReference: a.bookingReference,
+            customerId: a.customerId,
+            customerName: a.customer.name,
+            customerPhone: a.customer.phone,
+            customerEmail: a.customer.email,
+            telegramChatId: a.customer.telegramChatId,
+            barberId: a.barberId,
+            barberName: a.barber.name,
+            barberColor: "#ff9800",
+            serviceId: a.serviceId,
+            serviceName: a.service.name,
+            durationMinutes: a.service.durationMinutes,
+            startTime: a.startTime,
+            endTime: a.endTime,
+            status: a.status as "BOOKED" | "CANCELLED" | "COMPLETED",
+            priceEtb: a.priceEtb,
+            notes: a.notes,
+            cancellationToken: a.cancellationToken,
+            cancellationReason: a.cancellationReason,
+            cancelledAt: a.cancelledAt,
+            createdAt: a.createdAt,
+            updatedAt: a.updatedAt,
+            paymentScreenshot: a.paymentScreenshot,
+          });
         }
-      } catch {}
-    }
-  } else {
-    // Filter by specific date
-    const { start, end } = dayBounds(date);
-
-    console.log("Fetching appointments for date:", date, "start:", start, "end:", end);
-
-    const inMemoryForDate = inMemoryAppointments.filter((a) => {
-      const apptTime = new Date(a.startTime);
-      const matchDate = apptTime >= start && apptTime <= end;
-      const matchBarber = !barberId || a.barberId === barberId;
-      const matchStatus = !status || a.status === status;
-      return matchDate && matchBarber && matchStatus;
-    });
-
-    for (const a of inMemoryForDate) {
-      const barber = await getBarberById(a.barberId);
-      const service = await getServiceById(a.serviceId);
-      all.push({
-        ...a,
-        barberName: barber?.name || a.barberName || "Unknown Barber",
-        barberColor: barber?.color || "#ff9800",
-        serviceName: service?.name || a.serviceName || "Unknown Service",
-        durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
-      });
-    }
-
-    if (await checkPrismaAvailable()) {
-      try {
-        const appointmentsByBarber = await Promise.all(
-          targetBarbers.map(async (b) => {
-            const appts = await getBarberAppointmentsForDay(b.id, start, end);
-            return (appts as AppointmentData[]).map(async (a) => {
-              const service = await getServiceById(a.serviceId);
-              return {
-                ...a,
-                barberName: b.name,
-                barberColor: b.color || "#ff9800",
-                serviceName: service?.name || a.serviceName || "Unknown Service",
-                durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
-              };
-            });
-          })
-        );
-        const dbAppts = await Promise.all(appointmentsByBarber.flat());
-        const existingIds = new Set(all.map((a) => a.id));
-        for (const dbAppt of dbAppts) {
-          if (!existingIds.has(dbAppt.id)) {
-            all.push(dbAppt);
-          }
-        }
-      } catch {}
+      }
+    } catch (err) {
+      console.error("Failed to fetch appointments from database:", err);
     }
   }
 
@@ -234,10 +182,101 @@ export async function POST(request: NextRequest) {
           { status: 409 }
         );
       }
+
+      if (await checkPrismaAvailable()) {
+        try {
+          const dbConflict = await prisma.appointment.findFirst({
+            where: {
+              barberId: data.barberId,
+              status: "BOOKED",
+              startTime: { lt: endTime },
+              endTime: { gt: startTime },
+            },
+          });
+          if (dbConflict) {
+            return NextResponse.json(
+              { error: "Time slot conflict — choose a different time" },
+              { status: 409 }
+            );
+          }
+        } catch (err) {
+          console.error("Failed to check appointment conflicts in database:", err);
+        }
+      }
     }
 
     const bookingReference = `ARB-${Math.floor(1000 + Math.random() * 9000)}`;
     const cancellationToken = `tok_${Math.random().toString(36).substring(2)}${Date.now().toString(36)}`;
+    const notesText = data.notes
+      ? `${data.isWalkIn ? "[Walk-in] " : "[Admin] "}${data.notes}`
+      : data.isWalkIn
+      ? "[Walk-in]"
+      : "[Admin booking]";
+
+    // Persist to Postgres when available so the booking survives restarts
+    // and is visible to every instance of the app.
+    if (await checkPrismaAvailable()) {
+      try {
+        let customer = await prisma.customer.findFirst({
+          where: { phone: data.customerPhone },
+        });
+        if (!customer) {
+          customer = await prisma.customer.create({
+            data: {
+              name: data.customerName,
+              phone: data.customerPhone,
+              email: data.customerEmail || null,
+            },
+          });
+        }
+
+        const created = await prisma.appointment.create({
+          data: {
+            bookingReference,
+            cancellationToken,
+            customerId: customer.id,
+            barberId: barber.id,
+            serviceId: service.id,
+            startTime,
+            endTime,
+            priceEtb: service.priceEtb,
+            notes: notesText,
+            status: "BOOKED",
+          },
+          include: { customer: true, barber: true, service: true },
+        });
+
+        console.log("Admin created new appointment (db):", created.bookingReference, customer.name);
+        return NextResponse.json(
+          {
+            appointment: {
+              id: created.id,
+              bookingReference: created.bookingReference,
+              customerId: created.customerId,
+              customerName: created.customer.name,
+              customerPhone: created.customer.phone,
+              customerEmail: created.customer.email,
+              barberId: created.barberId,
+              barberName: created.barber.name,
+              serviceId: created.serviceId,
+              serviceName: created.service.name,
+              durationMinutes: created.service.durationMinutes,
+              startTime: created.startTime,
+              endTime: created.endTime,
+              status: created.status,
+              priceEtb: created.priceEtb,
+              notes: created.notes,
+              cancellationToken: created.cancellationToken,
+              createdAt: created.createdAt,
+              updatedAt: created.updatedAt,
+            },
+          },
+          { status: 201 }
+        );
+      } catch (err) {
+        console.error("Failed to persist admin booking to database, using memory fallback:", err);
+      }
+    }
 
     const newAppt: AppointmentData = {
       id: `appt-${Date.now()}`,
@@ -256,11 +295,7 @@ export async function POST(request: NextRequest) {
       endTime,
       status: "BOOKED",
       priceEtb: service.priceEtb,
-      notes: data.notes
-        ? `${data.isWalkIn ? "[Walk-in] " : "[Admin] "}${data.notes}`
-        : data.isWalkIn
-        ? "[Walk-in]"
-        : "[Admin booking]",
+      notes: notesText,
       cancellationToken,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -268,7 +303,7 @@ export async function POST(request: NextRequest) {
 
     inMemoryAppointments.push(newAppt);
     saveStoredAppointments();
-    console.log("Admin created new appointment:", newAppt.bookingReference, newAppt.customerName);
+    console.log("Admin created new appointment (memory):", newAppt.bookingReference, newAppt.customerName);
 
     return NextResponse.json({ appointment: newAppt }, { status: 201 });
   } catch (err: unknown) {
