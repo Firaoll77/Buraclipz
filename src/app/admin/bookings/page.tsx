@@ -94,6 +94,8 @@ export default function BookingsPage() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [newBookingCount, setNewBookingCount] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [lightboxZoom, setLightboxZoom] = useState(false);
   const initialLoadRef = useRef(false);
   const seenBookingIdsRef = useRef<Set<string>>(new Set());
 
@@ -427,7 +429,28 @@ export default function BookingsPage() {
 
       {/* Appointments List */}
       {loading ? (
-        <p className="text-sm text-center" style={{ color: "#888" }}>Loading…</p>
+        <div className="space-y-4">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="card-standard p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="shrink-0 flex flex-col items-center gap-2">
+                  <div className="h-5 w-12 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 w-14 bg-gray-200 rounded animate-pulse" />
+                </div>
+                <div className="flex-1 min-w-0 space-y-2">
+                  <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 w-32 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 w-48 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
+                </div>
+                <div className="shrink-0">
+                  <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : appointments.length === 0 && !showAll ? (
         <div className="card-standard p-10 text-center">
           <p style={{ color: "#888" }}>No appointments for this date</p>
@@ -514,25 +537,31 @@ export default function BookingsPage() {
                                   <img
                                     src={screenshotSrc(appt)}
                                     alt="Payment screenshot"
-                                    className="w-24 h-24 object-cover rounded border"
+                                    className="w-24 h-24 object-cover rounded border cursor-zoom-in"
                                     style={{ borderColor: "#e5e5e5" }}
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setLightboxSrc(screenshotSrc(appt));
+                                      setLightboxZoom(false);
+                                    }}
                                     onError={(e) => {
                                       e.currentTarget.style.display = 'none';
                                       const link = e.currentTarget.nextElementSibling as HTMLElement;
                                       if (link) link.style.display = 'none';
                                     }}
                                   />
-                                  <a
-                                    href={screenshotSrc(appt)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setLightboxSrc(screenshotSrc(appt));
+                                      setLightboxZoom(false);
+                                    }}
                                     className="text-xs text-[#5b4cff] font-medium underline inline-flex items-center gap-1"
                                   >
                                     <AttachmentIcon size={13} />
-                                    <span>View Payment Screenshot →</span>
-                                  </a>
+                                    <span>View Payment Screenshot</span>
+                                  </button>
                                 </div>
                               )}
                             </div>
@@ -617,25 +646,31 @@ export default function BookingsPage() {
                         <img
                           src={screenshotSrc(appt)}
                           alt="Payment screenshot"
-                          className="w-24 h-24 object-cover rounded border"
+                          className="w-24 h-24 object-cover rounded border cursor-zoom-in"
                           style={{ borderColor: "#e5e5e5" }}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLightboxSrc(screenshotSrc(appt));
+                            setLightboxZoom(false);
+                          }}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                             const link = e.currentTarget.nextElementSibling as HTMLElement;
                             if (link) link.style.display = 'none';
                           }}
                         />
-                        <a
-                          href={screenshotSrc(appt)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLightboxSrc(screenshotSrc(appt));
+                            setLightboxZoom(false);
+                          }}
                           className="text-xs text-[#5b4cff] font-medium underline inline-flex items-center gap-1"
                         >
                           <AttachmentIcon size={13} />
-                          <span>View Payment Screenshot →</span>
-                        </a>
+                          <span>View Payment Screenshot</span>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -745,25 +780,31 @@ export default function BookingsPage() {
               {hasScreenshot(selectedAppointment) && (
                 <div>
                   <p className="text-xs font-medium mb-2" style={{ color: "#888" }}>Payment Screenshot</p>
-                  <div className="border rounded-lg overflow-hidden" style={{ borderColor: "#e5e5e5" }}>
+                  <div className="border rounded-lg overflow-hidden cursor-zoom-in" style={{ borderColor: "#e5e5e5" }}>
                     <img
                       src={screenshotSrc(selectedAppointment)}
                       alt="Payment screenshot"
                       className="w-full h-auto"
                       style={{ maxHeight: 300 }}
+                      onClick={() => {
+                        setLightboxSrc(screenshotSrc(selectedAppointment));
+                        setLightboxZoom(false);
+                      }}
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                       }}
                     />
                   </div>
-                  <a
-                    href={screenshotSrc(selectedAppointment)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLightboxSrc(screenshotSrc(selectedAppointment));
+                      setLightboxZoom(false);
+                    }}
                     className="text-xs text-[#5b4cff] font-medium underline mt-2 inline-block"
                   >
-                    Open in new tab →
-                  </a>
+                    View full size
+                  </button>
                 </div>
               )}
               
@@ -782,6 +823,43 @@ export default function BookingsPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Screenshot Lightbox — click image to zoom, click outside to close */}
+      {lightboxSrc && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4"
+          onClick={() => {
+            setLightboxSrc(null);
+            setLightboxZoom(false);
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setLightboxSrc(null);
+              setLightboxZoom(false);
+            }}
+            className="absolute top-4 right-4 text-white/80 hover:text-white"
+            aria-label="Close"
+          >
+            <CloseIcon size={28} />
+          </button>
+          <div
+            className="max-w-full max-h-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={lightboxSrc}
+              alt="Payment screenshot"
+              className={`transition-transform duration-200 ${lightboxZoom ? "scale-[1.75]" : "scale-100"} cursor-zoom-in max-w-full max-h-[85vh] object-contain`}
+              onClick={() => setLightboxZoom((z) => !z)}
+            />
+          </div>
+          <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-white/70">
+            Click image to zoom · click outside to close
+          </p>
         </div>
       )}
     </div>
