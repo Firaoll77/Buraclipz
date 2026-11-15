@@ -235,23 +235,20 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
       setErrorMsg(null);
       setUploading(true);
 
-      // Upload payment screenshot with fallback to compressed base64 data URL
-      let screenshotUrl = paymentScreenshotPreview;
-      try {
-        const formData = new FormData();
-        formData.append("file", paymentScreenshot);
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json();
-          if (uploadData.url) {
-            screenshotUrl = uploadData.url;
-          }
-        }
-      } catch (uploadErr) {
-        console.warn("Upload fallback to data URL:", uploadErr);
+      // Upload payment screenshot to private storage — required.
+      // No Base64 fallback: if the upload fails, the booking must not proceed.
+      const formData = new FormData();
+      formData.append("file", paymentScreenshot);
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const uploadData = await uploadRes.json().catch(() => ({}));
+      if (!uploadRes.ok || !uploadData.publicId || !uploadData.receipt) {
+        throw new Error(
+          uploadData.error ||
+            "Failed to upload payment screenshot. Please try again."
+        );
       }
 
       // Use the first available barber (since there's only 1 barber)
@@ -267,7 +264,8 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
           time: selectedSlot.timeStr,
           customerName,
           customerPhone: phoneCheck.normalized,
-          paymentScreenshot: screenshotUrl,
+          paymentPublicId: uploadData.publicId,
+          uploadReceipt: uploadData.receipt,
         }),
       });
 

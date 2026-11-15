@@ -100,6 +100,7 @@ export async function GET(request: NextRequest) {
             createdAt: a.createdAt,
             updatedAt: a.updatedAt,
             paymentScreenshot: a.paymentScreenshot,
+            paymentPublicId: a.paymentPublicId ?? null,
           });
         }
       }
@@ -269,6 +270,7 @@ export async function POST(request: NextRequest) {
               cancellationToken: created.cancellationToken,
               createdAt: created.createdAt,
               updatedAt: created.updatedAt,
+              paymentPublicId: created.paymentPublicId ?? null,
             },
           },
           { status: 201 }

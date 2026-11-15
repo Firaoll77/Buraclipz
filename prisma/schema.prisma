@@ -125,7 +125,8 @@ model Appointment {
   endTime            DateTime          // Scheduled end = startTime + duration
   status             AppointmentStatus @default(BOOKED)
   priceEtb           Int               // Locked-in price in ETB
-  paymentScreenshot  String?           // URL of payment screenshot
+  paymentScreenshot  String?           // Legacy: URL or base64 data URL of payment screenshot
+  paymentPublicId    String?           // Cloudinary public_id for private payment screenshot
   notes              String?
   cancellationToken  String            @unique @default(cuid()) // Secure token for cancel/reschedule
   cancellationReason String?

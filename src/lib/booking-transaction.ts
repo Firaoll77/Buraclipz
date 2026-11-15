@@ -45,6 +45,7 @@ export interface ProtectedBookingInput {
   customerName: string;
   customerPhone: string;
   paymentScreenshot?: string | null;
+  paymentPublicId?: string | null;
   notes?: string | null;
   bufferMinutes?: number;
 }
@@ -62,6 +63,7 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
     customerName,
     customerPhone,
     paymentScreenshot,
+    paymentPublicId,
     notes,
     bufferMinutes = 10,
   } = input;
@@ -91,6 +93,22 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
 
           if (conflict) {
             throw new DoubleBookingError();
+          }
+
+          // A payment screenshot may only back one active appointment
+          if (paymentPublicId) {
+            const reused = await tx.appointment.findFirst({
+              where: {
+                paymentPublicId,
+                status: { not: "CANCELLED" },
+              },
+              select: { id: true },
+            });
+            if (reused) {
+              throw new Error(
+                "This payment screenshot has already been used for another booking."
+              );
+            }
           }
 
           // Service and barber check
@@ -128,7 +146,8 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
               startTime,
               endTime,
               priceEtb: service.priceEtb,
-              paymentScreenshot: paymentScreenshot || null,
+              paymentScreenshot: paymentPublicId ? null : paymentScreenshot || null,
+              paymentPublicId: paymentPublicId ?? null,
               notes: notes || null,
               status: "BOOKED",
             },
@@ -172,6 +191,7 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
       customerPhone,
       notes,
       paymentScreenshot,
+      paymentPublicId,
     });
   } catch (err: any) {
     if (

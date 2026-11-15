@@ -66,6 +66,7 @@ export interface AppointmentData {
   createdAt: Date;
   updatedAt: Date;
   paymentScreenshot?: string | null;
+  paymentPublicId?: string | null;
 }
 
 // In-Memory Seed Data Fallback
@@ -733,6 +734,7 @@ export async function createBooking(data: {
   telegramChatId?: string | null;
   notes?: string | null;
   paymentScreenshot?: string | null;
+  paymentPublicId?: string | null;
 }) {
   const service = await getServiceById(data.serviceId);
   if (!service) throw new Error("Selected service not found");
@@ -793,7 +795,8 @@ export async function createBooking(data: {
           endTime: data.endTime,
           priceEtb: service.priceEtb,
           notes: data.notes,
-          paymentScreenshot: data.paymentScreenshot,
+          paymentScreenshot: data.paymentPublicId ? null : data.paymentScreenshot,
+          paymentPublicId: data.paymentPublicId ?? null,
           status: "BOOKED",
         },
       });
@@ -815,6 +818,19 @@ export async function createBooking(data: {
       };
     } catch (e: any) {
       if (e.message.includes("no longer available")) throw e;
+    }
+  }
+
+  // A payment screenshot may only back one active appointment
+  if (data.paymentPublicId) {
+    const reused = inMemoryAppointments.find(
+      (a) =>
+        a.paymentPublicId === data.paymentPublicId && a.status !== "CANCELLED"
+    );
+    if (reused) {
+      throw new Error(
+        "This payment screenshot has already been used for another booking."
+      );
     }
   }
 
@@ -852,7 +868,8 @@ export async function createBooking(data: {
     cancellationToken,
     createdAt: new Date(),
     updatedAt: new Date(),
-    paymentScreenshot: data.paymentScreenshot,
+    paymentScreenshot: data.paymentPublicId ? null : data.paymentScreenshot,
+    paymentPublicId: data.paymentPublicId ?? null,
   };
 
   inMemoryAppointments.push(newAppt);
@@ -875,6 +892,7 @@ export async function createBooking(data: {
     startTime: newAppt.startTime,
     endTime: newAppt.endTime,
     status: newAppt.status,
+    paymentPublicId: newAppt.paymentPublicId ?? null,
   };
 }
 

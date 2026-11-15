@@ -41,6 +41,7 @@ function toAppointmentData(a: any) {
     createdAt: a.createdAt,
     updatedAt: a.updatedAt,
     paymentScreenshot: a.paymentScreenshot,
+    paymentPublicId: a.paymentPublicId ?? null,
   };
 }
 

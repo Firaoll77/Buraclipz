@@ -8,6 +8,8 @@ import {
   getBarberById,
 } from "@/lib/data-store";
 import { bookAppointmentWithProtection, DoubleBookingError } from "@/lib/booking-transaction";
+import { verifyUploadReceipt } from "@/lib/upload-receipt";
+import { SCREENSHOT_FOLDER } from "@/lib/cloudinary";
 import { dispatchBookingConfirmation } from "@/lib/notifications";
 import { calculateBarberDaySlots } from "@/lib/availability";
 import {
@@ -27,6 +29,8 @@ const bookingSchema = z.object({
   customerName: z.string().min(2, "Name must be at least 2 characters"),
   customerPhone: z.string().min(9, "Phone number is required"),
   paymentScreenshot: z.string().optional(),
+  paymentPublicId: z.string().max(512).optional(),
+  uploadReceipt: z.string().max(2048).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -49,7 +53,49 @@ export async function POST(request: NextRequest) {
       customerName,
       customerPhone,
       paymentScreenshot,
+      paymentPublicId,
+      uploadReceipt,
     } = parsed.data;
+
+    // Verify the payment screenshot asset reference server-side.
+    // New bookings must reference an asset uploaded via /api/upload
+    // (receipt proves folder ownership, validity, and freshness).
+    let verifiedPublicId: string | null = null;
+    if (paymentPublicId) {
+      const validFormat =
+        paymentPublicId.startsWith(`${SCREENSHOT_FOLDER}/`) &&
+        /^[\w\-./]+$/.test(paymentPublicId) &&
+        !paymentPublicId.includes("..");
+      if (
+        !validFormat ||
+        !uploadReceipt ||
+        !verifyUploadReceipt(uploadReceipt, paymentPublicId)
+      ) {
+        return NextResponse.json(
+          { error: "Invalid or expired payment screenshot. Please re-upload and try again." },
+          { status: 400 }
+        );
+      }
+      verifiedPublicId = paymentPublicId;
+    }
+
+    // Legacy paymentScreenshot submissions are no longer accepted for new
+    // bookings — arbitrary strings/data URLs must not be persisted.
+    // Historical records are unaffected: the admin display layer still
+    // renders legacy values stored before this change.
+    if (
+      paymentScreenshot &&
+      paymentScreenshot.trim() !== "" &&
+      !verifiedPublicId
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Direct screenshot submissions are no longer accepted. Please re-upload your payment screenshot.",
+        },
+        { status: 400 }
+      );
+    }
 
     // 1. Validate Ethiopian Phone Number
     const phoneValidation = validateEthiopianPhone(customerPhone);
@@ -123,7 +169,8 @@ export async function POST(request: NextRequest) {
       endTime,
       customerName,
       customerPhone: phoneValidation.normalized,
-      paymentScreenshot: paymentScreenshot || null,
+      paymentScreenshot: verifiedPublicId ? null : paymentScreenshot || null,
+      paymentPublicId: verifiedPublicId,
       notes: null,
     });
 
@@ -153,6 +200,9 @@ export async function POST(request: NextRequest) {
         { error: "This time slot is no longer available. Please select another slot." },
         { status: 409 }
       );
+    }
+    if (error.message?.includes("screenshot has already been used")) {
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
     return NextResponse.json(
       { error: error.message || "Failed to create booking" },

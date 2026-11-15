@@ -26,6 +26,7 @@ interface Appointment {
   priceEtb: number;
   notes?: string;
   paymentScreenshot?: string;
+  paymentPublicId?: string | null;
   createdAt: string;
   cancellationReason?: string;
 }
@@ -54,6 +55,23 @@ function formatDateTime(iso: string) {
 
 function toLocalDateStr(date: Date) {
   return date.toLocaleDateString("en-CA", { timeZone: "Africa/Addis_Ababa" });
+}
+
+// New bookings store a private Cloudinary public_id served via the
+// authenticated media endpoint; legacy records keep paymentScreenshot
+// (data: URLs or /uploads/ paths) which render directly.
+function hasScreenshot(appt: Appointment) {
+  return (
+    Boolean(appt.paymentPublicId) ||
+    Boolean(appt.paymentScreenshot && appt.paymentScreenshot.trim() !== "")
+  );
+}
+
+function screenshotSrc(appt: Appointment) {
+  if (appt.paymentPublicId) {
+    return `/api/admin/media/${appt.paymentPublicId}`;
+  }
+  return appt.paymentScreenshot || "";
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -95,7 +113,9 @@ export default function BookingsPage() {
       setLoading(true);
     }
     try {
-      const res = await fetch(`/api/admin/appointments${showAll ? '' : `?date=${date}`}&t=${Date.now()}`);
+      const params = new URLSearchParams({ t: String(Date.now()) });
+      if (!showAll) params.set("date", date);
+      const res = await fetch(`/api/admin/appointments?${params}`);
       const data = await res.json();
       const viewAppts = data.appointments || [];
       setAppointments(viewAppts);
@@ -442,17 +462,17 @@ export default function BookingsPage() {
                 return acc;
               }, {} as Record<string, Appointment[]>);
 
-              // Sort dates chronologically
+              // Sort dates newest first
               const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
                 const firstApptA = groupedByDate[a][0];
                 const firstApptB = groupedByDate[b][0];
-                return new Date(firstApptA.startTime).getTime() - new Date(firstApptB.startTime).getTime();
+                return new Date(firstApptB.startTime).getTime() - new Date(firstApptA.startTime).getTime();
               });
 
               return sortedDates.map((date) => {
                 const appts = groupedByDate[date];
                 const sortedAppts = [...appts].sort((a, b) =>
-                  new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+                  new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
                 );
 
                 return (
@@ -489,10 +509,10 @@ export default function BookingsPage() {
                               <p className="text-xs" style={{ color: "#888" }}>
                                 Booked: {formatDateTime(appt.createdAt)}
                               </p>
-                              {appt.paymentScreenshot && appt.paymentScreenshot.trim() !== "" && (
+                              {hasScreenshot(appt) && (
                                 <div className="mt-2">
                                   <img
-                                    src={appt.paymentScreenshot}
+                                    src={screenshotSrc(appt)}
                                     alt="Payment screenshot"
                                     className="w-24 h-24 object-cover rounded border"
                                     style={{ borderColor: "#e5e5e5" }}
@@ -504,7 +524,7 @@ export default function BookingsPage() {
                                     }}
                                   />
                                   <a
-                                    href={appt.paymentScreenshot}
+                                    href={screenshotSrc(appt)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
@@ -592,10 +612,10 @@ export default function BookingsPage() {
                     <p className="text-xs" style={{ color: "#888" }}>
                       Booked: {formatDateTime(appt.createdAt)}
                     </p>
-                    {appt.paymentScreenshot && appt.paymentScreenshot.trim() !== "" && (
+                    {hasScreenshot(appt) && (
                       <div className="mt-2">
                         <img
-                          src={appt.paymentScreenshot}
+                          src={screenshotSrc(appt)}
                           alt="Payment screenshot"
                           className="w-24 h-24 object-cover rounded border"
                           style={{ borderColor: "#e5e5e5" }}
@@ -607,7 +627,7 @@ export default function BookingsPage() {
                           }}
                         />
                         <a
-                          href={appt.paymentScreenshot}
+                          href={screenshotSrc(appt)}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
@@ -722,12 +742,12 @@ export default function BookingsPage() {
                 <p className="text-sm" style={{ color: "#000" }}>{formatDateTime(selectedAppointment.createdAt)}</p>
               </div>
               
-              {selectedAppointment.paymentScreenshot && (
+              {hasScreenshot(selectedAppointment) && (
                 <div>
                   <p className="text-xs font-medium mb-2" style={{ color: "#888" }}>Payment Screenshot</p>
                   <div className="border rounded-lg overflow-hidden" style={{ borderColor: "#e5e5e5" }}>
                     <img
-                      src={selectedAppointment.paymentScreenshot}
+                      src={screenshotSrc(selectedAppointment)}
                       alt="Payment screenshot"
                       className="w-full h-auto"
                       style={{ maxHeight: 300 }}
@@ -737,7 +757,7 @@ export default function BookingsPage() {
                     />
                   </div>
                   <a
-                    href={selectedAppointment.paymentScreenshot}
+                    href={screenshotSrc(selectedAppointment)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-[#5b4cff] font-medium underline mt-2 inline-block"
