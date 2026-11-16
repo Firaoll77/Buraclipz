@@ -533,7 +533,11 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
                       isSelected ? "date-pill-active" : "date-pill-default"
                     }`}
                   >
-                    <span className="text-xs uppercase tracking-wider font-semibold text-[#666666]">
+                    <span
+                      className={`text-xs uppercase tracking-wider font-semibold ${
+                        isSelected ? "text-white" : "text-[#666666]"
+                      }`}
+                    >
                       {item.dayOfWeek}
                     </span>
                     <span className="text-lg font-semibold my-1">

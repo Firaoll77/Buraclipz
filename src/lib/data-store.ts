@@ -383,7 +383,7 @@ export async function checkPrismaAvailable(): Promise<boolean> {
   try {
     await Promise.race([
       prisma.$queryRaw`SELECT 1`,
-      new Promise((_, reject) => setTimeout(() => reject(new Error("DB check timeout")), 1500)),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("DB check timeout")), 8000)),
     ]);
     globalForStore.__isPrismaAvailable = true;
     return true;

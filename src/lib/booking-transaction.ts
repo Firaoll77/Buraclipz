@@ -51,6 +51,50 @@ export interface ProtectedBookingInput {
 }
 
 /**
+ * Resolves service/barber IDs to their Postgres rows. The booking page can
+ * display the in-memory catalog (srv-/barber- prefixed IDs) when the DB health check
+ * fails during a cold start; those IDs have no DB counterpart, so we map them
+ * to the DB row with the same name. IDs that already exist in Postgres are
+ * returned unchanged.
+ */
+async function resolveDbCatalogIds(
+  serviceId: string,
+  barberId: string
+): Promise<{ serviceId: string; barberId: string }> {
+  const [svcRow, brbRow] = await Promise.all([
+    prisma.service.findUnique({ where: { id: serviceId }, select: { id: true } }),
+    prisma.barber.findUnique({ where: { id: barberId }, select: { id: true } }),
+  ]);
+
+  let resolvedServiceId = serviceId;
+  let resolvedBarberId = barberId;
+
+  if (!svcRow) {
+    const memSvc = await getServiceById(serviceId);
+    const match =
+      memSvc &&
+      (await prisma.service.findFirst({
+        where: { name: memSvc.name, isActive: true },
+        select: { id: true },
+      }));
+    if (match) resolvedServiceId = match.id;
+  }
+
+  if (!brbRow) {
+    const memBrb = await getBarberById(barberId);
+    const match =
+      memBrb &&
+      (await prisma.barber.findFirst({
+        where: { name: memBrb.name, isActive: true },
+        select: { id: true },
+      }));
+    if (match) resolvedBarberId = match.id;
+  }
+
+  return { serviceId: resolvedServiceId, barberId: resolvedBarberId };
+}
+
+/**
  * Books an appointment with database-level serializable isolation and row-level locking.
  * Guarantees that even under concurrent race conditions, only ONE booking can claim an overlapping slot.
  */
@@ -77,6 +121,13 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
 
   try {
     if (await checkPrismaAvailable()) {
+      // Map any in-memory catalog IDs (srv-*/barber-*) to their DB rows so a
+      // booking succeeds even if the client loaded the catalog during a DB
+      // outage and the IDs have no Postgres counterpart.
+      const ids = await resolveDbCatalogIds(serviceId, barberId);
+      const dbServiceId = ids.serviceId;
+      const dbBarberId = ids.barberId;
+
       // Execute in PostgreSQL with Serializable Isolation Level
       return await prisma.$transaction(
         async (tx) => {
@@ -84,7 +135,7 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
           // An overlap occurs if: existing.startTime < bufferedEndTime AND existing.endTime > bufferedStartTime
           const conflict = await tx.appointment.findFirst({
             where: {
-              barberId,
+              barberId: dbBarberId,
               status: "BOOKED",
               startTime: { lt: bufferedEndTime },
               endTime: { gt: bufferedStartTime },
@@ -112,10 +163,10 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
           }
 
           // Service and barber check
-          const service = await tx.service.findUnique({ where: { id: serviceId } });
+          const service = await tx.service.findUnique({ where: { id: dbServiceId } });
           if (!service) throw new Error("Service not found");
 
-          const barber = await tx.barber.findUnique({ where: { id: barberId } });
+          const barber = await tx.barber.findUnique({ where: { id: dbBarberId } });
           if (!barber) throw new Error("Barber not found");
 
           // Find or create customer
@@ -141,8 +192,8 @@ export async function bookAppointmentWithProtection(input: ProtectedBookingInput
               bookingReference,
               cancellationToken,
               customerId: customer.id,
-              barberId,
-              serviceId,
+              barberId: dbBarberId,
+              serviceId: dbServiceId,
               startTime,
               endTime,
               priceEtb: service.priceEtb,
