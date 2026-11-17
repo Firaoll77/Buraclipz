@@ -7,6 +7,7 @@ import { validateEthiopianPhone, formatEthiopianPhone } from "@/lib/phone";
 import { getAddisDateString } from "@/lib/date-utils";
 import { ClockIcon, CheckmarkIcon, CloseIcon, CopyIcon } from "@/components/icons/Hugeicons";
 import PaymentCard from "@/components/PaymentCard";
+import BookingPicker from "@/components/BookingPicker";
 
 const TELEBIRR_NUMBER = process.env.NEXT_PUBLIC_TELEBIRR_NUMBER || "+251 966 184 635";
 const TELEBIRR_NAME = process.env.NEXT_PUBLIC_TELEBIRR_NAME || "Bekan";
@@ -498,110 +499,39 @@ export default function BookingFlow({ preselectedServiceId }: BookingFlowProps) 
       {step === 2 && (
         <div className="flex flex-col gap-6">
           {/* Active Summary Banner */}
-          <div className="p-4 rounded-lg bg-[#f5f5f8] border border-[#e5e5e5] flex flex-wrap items-center justify-between gap-4">
+          <div className="p-4 rounded-xl bg-[#f5f5f8] border border-[#e5e5e5] flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="text-xs uppercase font-semibold text-[#666666] block">Service</span>
-              <span className="text-base font-semibold text-[#0f0f14]">{selectedService?.name}</span>
+              <span className="text-xs uppercase font-semibold text-[#666666] block">Selected Haircut</span>
+              <span className="text-base font-bold text-[#0f0f14]">{selectedService?.name}</span>
             </div>
             <button
               onClick={() => setStep(1)}
               className="btn-secondary text-xs"
             >
-              Change Service
+              Change Haircut
             </button>
           </div>
 
-          {/* Date Picker Ribbon */}
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <label className="text-base font-semibold text-[#0f0f14]">
-                1. Pick A Date
-              </label>
-              <span className="badge-accent text-xs">
-                {selectedDate ? formatDualDate(selectedDate).combined : ""}
-              </span>
-            </div>
-
-            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-              {upcomingDates.map((item) => {
-                const isSelected = selectedDate === item.dateStr;
-                return (
-                  <button
-                    key={item.dateStr}
-                    onClick={() => setSelectedDate(item.dateStr)}
-                    className={`date-pill ${
-                      isSelected ? "date-pill-active" : "date-pill-default"
-                    }`}
-                  >
-                    <span
-                      className={`text-xs uppercase tracking-wider font-semibold ${
-                        isSelected ? "text-white" : "text-[#666666]"
-                      }`}
-                    >
-                      {item.dayOfWeek}
-                    </span>
-                    <span className="text-lg font-semibold my-1">
-                      {item.dayNum}
-                    </span>
-                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-[#e5e5e5] text-[#666666]">
-                      {item.ethiopianMonth.slice(0, 3)} {item.ethiopianDay}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Time Slots Grid */}
-          <div className="flex flex-col gap-4 pt-4 border-t border-[#e5e5e5]">
-            <div className="flex items-center justify-between">
-              <label className="text-base font-semibold text-[#0f0f14]">
-                2. Select Time Slot
-              </label>
-              <span className="text-xs font-medium text-[#666666]">Addis Time (UTC+3)</span>
-            </div>
-
-            {loadingSlots ? (
-              <div className="py-12 text-center text-[#666666]">
-                <div className="w-12 h-12 border-4 border-[#5b4cff] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p>Checking availability...</p>
-              </div>
-            ) : slotsError ? (
-              <div className="p-4 text-center rounded-lg bg-red-50 border border-red-200">
-                <p className="text-base font-semibold text-red-700">Failed to load available slots</p>
-                <p className="text-sm text-red-600 mt-2">
-                  Please try selecting a different date or refresh the page.
-                </p>
-              </div>
-            ) : slots.length === 0 ? (
-              <div className="p-4 text-center rounded-lg bg-white border border-[#e5e5e5]">
-                <p className="text-base font-semibold text-[#0f0f14]">No available slots for this date.</p>
-                <p className="text-sm text-[#666666] mt-2">
-                  Fully booked or closed. Please pick another date above.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                {slots.map((slot) => {
-                  const isSelected = selectedSlot?.timeStr === slot.timeStr;
-                  return (
-                    <button
-                      key={slot.timeStr}
-                      onClick={() => {
-                        setSelectedSlot(slot);
-                        setStep(3);
-                      }}
-                      className={`time-slot ${
-                        isSelected ? "time-slot-active" : "time-slot-default"
-                      }`}
-                    >
-                      {slot.displayTime}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          {/* Swipeable Week Strip & Slot Grid Picker */}
+          <BookingPicker
+            selectedDate={selectedDate}
+            onSelectDate={(newDate) => {
+              setSelectedDate(newDate);
+              setSelectedSlot(null);
+            }}
+            selectedSlot={selectedSlot}
+            onSelectSlot={(slot) => {
+              setSelectedSlot(slot);
+            }}
+            availableSlots={slots}
+            loadingSlots={loadingSlots}
+            serviceDurationMinutes={selectedService?.durationMinutes || 30}
+            onConfirm={() => {
+              if (selectedSlot) {
+                setStep(3);
+              }
+            }}
+          />
         </div>
       )}
 

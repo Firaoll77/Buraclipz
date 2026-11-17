@@ -114,23 +114,36 @@ export default function PaymentCard({
                 alt="Commercial Bank of Ethiopia Card"
                 className="w-full h-full object-cover"
               />
-              {/* CBE Account Number Overlay */}
+              {/* CBE Account & Name Overlay */}
               <div
-                className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2"
+                className="absolute bottom-2.5 sm:bottom-3 left-2.5 sm:left-3 right-2.5 sm:right-3 flex items-center justify-between gap-2 bg-black/70 backdrop-blur-md rounded-xl px-3 py-2 border border-white/15 shadow-lg"
                 onClick={(e) => handleCopy(cbeAccount.replace(/\s+/g, ""), "cbe", e)}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === "Enter" && handleCopy(cbeAccount.replace(/\s+/g, ""), "cbe", e as any)}
-                aria-label={`Copy CBE account number: ${cbeAccount}`}
+                aria-label={`Copy CBE account number: ${cbeAccount} for ${cbeName}`}
               >
-                <span className="font-mono text-sm sm:text-base font-bold text-white tracking-wider">
-                  {cbeAccount}
-                </span>
-                {copiedText === "cbe" ? (
-                  <CheckmarkIcon size={16} className="text-green-400 shrink-0" />
-                ) : (
-                  <CopyIcon size={16} className="text-white/80 shrink-0" />
-                )}
+                <div className="flex flex-col min-w-0 text-left">
+                  <span className="text-[10px] sm:text-xs font-semibold text-amber-300 uppercase tracking-wider truncate">
+                    {cbeName}
+                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-white tracking-wider">
+                    {cbeAccount}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 transition-colors">
+                  {copiedText === "cbe" ? (
+                    <>
+                      <CheckmarkIcon size={14} className="text-green-400" />
+                      <span className="text-[11px] font-semibold text-green-400 hidden xs:inline">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <CopyIcon size={14} className="text-white/90" />
+                      <span className="text-[11px] font-medium text-white/90 hidden xs:inline">Copy</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -148,27 +161,89 @@ export default function PaymentCard({
                 alt="TeleBirr Wallet Card"
                 className="w-full h-full object-cover"
               />
-              {/* TeleBirr Wallet Number Overlay */}
+              {/* TeleBirr Number & Name Overlay */}
               <div
-                className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-2 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2"
+                className="absolute bottom-2.5 sm:bottom-3 left-2.5 sm:left-3 right-2.5 sm:right-3 flex items-center justify-between gap-2 bg-black/70 backdrop-blur-md rounded-xl px-3 py-2 border border-white/15 shadow-lg"
                 onClick={(e) => handleCopy(telebirrNumber.replace(/\s+/g, ""), "telebirr", e)}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => e.key === "Enter" && handleCopy(telebirrNumber.replace(/\s+/g, ""), "telebirr", e as any)}
-                aria-label={`Copy TeleBirr wallet number: ${telebirrNumber}`}
+                aria-label={`Copy TeleBirr wallet number: ${telebirrNumber} for ${telebirrName}`}
               >
-                <span className="font-mono text-sm sm:text-base font-bold text-white tracking-wider">
-                  {telebirrNumber}
-                </span>
-                {copiedText === "telebirr" ? (
-                  <CheckmarkIcon size={16} className="text-green-400 shrink-0" />
-                ) : (
-                  <CopyIcon size={16} className="text-white/80 shrink-0" />
-                )}
+                <div className="flex flex-col min-w-0 text-left">
+                  <span className="text-[10px] sm:text-xs font-semibold text-emerald-300 uppercase tracking-wider truncate">
+                    {telebirrName}
+                  </span>
+                  <span className="font-mono text-xs sm:text-sm font-bold text-white tracking-wider">
+                    {telebirrNumber}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 transition-colors">
+                  {copiedText === "telebirr" ? (
+                    <>
+                      <CheckmarkIcon size={14} className="text-green-400" />
+                      <span className="text-[11px] font-semibold text-green-400 hidden xs:inline">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <CopyIcon size={14} className="text-white/90" />
+                      <span className="text-[11px] font-medium text-white/90 hidden xs:inline">Copy</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Active Account Info Card (Mobile-friendly direct display & copy) */}
+      <div className="w-full bg-[#f8f8fa] border border-[#e5e5ea] rounded-xl p-3 flex items-center justify-between gap-3 shadow-xs">
+        <div className="flex flex-col min-w-0 text-left">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span
+              className={`w-2 h-2 rounded-full shrink-0 ${
+                isFlipped ? "bg-[#00a651]" : "bg-[#800080]"
+              }`}
+            />
+            <span className="text-[11px] text-[#666666] font-semibold uppercase tracking-wider">
+              {isFlipped ? "Telebirr Wallet" : "CBE Bank Account"}
+            </span>
+          </div>
+          <span className="text-sm font-bold text-[#0f0f14] truncate">
+            {isFlipped ? telebirrName : cbeName}
+          </span>
+          <span className="font-mono text-xs text-[#444444] font-semibold tracking-wide">
+            {isFlipped ? telebirrNumber : cbeAccount}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={(e) =>
+            handleCopy(
+              isFlipped
+                ? telebirrNumber.replace(/\s+/g, "")
+                : cbeAccount.replace(/\s+/g, ""),
+              isFlipped ? "telebirr" : "cbe",
+              e
+            )
+          }
+          className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#5b4cff] hover:bg-[#4a3fe6] text-white text-xs font-semibold transition-all active:scale-95 shadow-xs"
+          aria-label={`Copy ${isFlipped ? "TeleBirr number" : "CBE account number"}`}
+        >
+          {copiedText === (isFlipped ? "telebirr" : "cbe") ? (
+            <>
+              <CheckmarkIcon size={14} className="text-white" />
+              <span>Copied!</span>
+            </>
+          ) : (
+            <>
+              <CopyIcon size={14} className="text-white" />
+              <span>Copy</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Toast Notification */}
@@ -180,19 +255,27 @@ export default function PaymentCard({
         >
           <CheckmarkIcon size={16} className="text-green-400" />
           <span>
-            {copiedText === "cbe" ? `CBE account ${cbeAccount} copied!` : `TeleBirr ${telebirrNumber} copied!`}
+            {copiedText === "cbe"
+              ? `CBE account ${cbeAccount} (${cbeName}) copied!`
+              : `TeleBirr ${telebirrNumber} (${telebirrName}) copied!`}
           </span>
         </div>
       )}
 
-      {/* Flip Button */}
-      <button
-        type="button"
-        onClick={handleFlip}
-        className="px-6 py-2.5 rounded-lg bg-[#5b4cff] hover:bg-[#4a3fe6] text-white font-semibold text-sm transition-colors shadow-sm"
-      >
-        {isFlipped ? "Return to CBE" : "Flip to TeleBirr"}
-      </button>
+      {/* Flip Button & Hint */}
+      <div className="flex flex-col items-center gap-1.5 w-full">
+        <button
+          type="button"
+          onClick={handleFlip}
+          className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-[#141414] hover:bg-[#2b2b2b] text-white font-semibold text-sm transition-colors shadow-sm flex items-center justify-center gap-2"
+        >
+          <span>🔄</span>
+          <span>{isFlipped ? "Flip to CBE" : "Flip to TeleBirr"}</span>
+        </button>
+        <span className="text-[11px] text-[#888888]">
+          Tap card or button to flip between CBE & Telebirr
+        </span>
+      </div>
     </div>
   );
 }
