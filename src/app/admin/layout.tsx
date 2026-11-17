@@ -52,12 +52,13 @@ function NavLink({
 }
 
 function Sidebar({ onClose }: { onClose?: () => void }) {
-  const router = useRouter();
-
   async function handleLogout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
-    router.refresh();
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+    } catch (e) {
+      console.error("Logout failed", e);
+    }
+    window.location.href = "/admin/login";
   }
 
   return (
