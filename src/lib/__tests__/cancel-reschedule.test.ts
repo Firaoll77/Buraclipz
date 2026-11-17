@@ -13,7 +13,7 @@ describe("Step 6: Cancel/Reschedule via Secure Token & 2-Hour Cutoff", () => {
     const futureEnd = new Date(futureStart.getTime() + 40 * 60 * 1000);
 
     const appt = await createBooking({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: futureStart,
       endTime: futureEnd,
@@ -41,7 +41,7 @@ describe("Step 6: Cancel/Reschedule via Secure Token & 2-Hour Cutoff", () => {
     const nearEnd = new Date(nearStart.getTime() + 40 * 60 * 1000);
 
     const appt = await createBooking({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-abel",
       startTime: nearStart,
       endTime: nearEnd,
@@ -63,7 +63,7 @@ describe("Step 6: Cancel/Reschedule via Secure Token & 2-Hour Cutoff", () => {
     const initialEnd = new Date(initialStart.getTime() + 40 * 60 * 1000);
 
     const appt = await createBooking({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: initialStart,
       endTime: initialEnd,
@@ -93,7 +93,7 @@ describe("Step 6: Cancel/Reschedule via Secure Token & 2-Hour Cutoff", () => {
     const nearEnd = new Date(nearStart.getTime() + 40 * 60 * 1000);
 
     const appt = await createBooking({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-yohannes",
       startTime: nearStart,
       endTime: nearEnd,

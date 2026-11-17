@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { validateEthiopianPhone } from "@/lib/phone";
-import { createAddisDateTime } from "@/lib/date-utils";
+import { createAddisDateTime, getAddisDateString } from "@/lib/date-utils";
 import {
   getServiceById,
   getAllBarbers,
@@ -35,7 +35,12 @@ const bookingSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
     const parsed = bookingSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -102,6 +107,14 @@ export async function POST(request: NextRequest) {
     if (!phoneValidation.isValid || !phoneValidation.normalized) {
       return NextResponse.json(
         { error: phoneValidation.error || "Invalid Ethiopian phone number" },
+        { status: 400 }
+      );
+    }
+
+    // 1b. Reject bookings for past dates (compared in Addis Ababa time)
+    if (dateStr < getAddisDateString(new Date())) {
+      return NextResponse.json(
+        { error: "Cannot book an appointment in the past." },
         { status: 400 }
       );
     }

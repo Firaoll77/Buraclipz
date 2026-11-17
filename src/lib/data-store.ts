@@ -370,6 +370,10 @@ export function saveStoredServices() {
 }
 
 export async function checkPrismaAvailable(): Promise<boolean> {
+  // Unit tests must exercise the in-memory store deterministically and must
+  // never write test bookings into a real database.
+  if (process.env.NODE_ENV === "test") return false;
+
   const now = Date.now();
   if (
     globalForStore.__isPrismaAvailable === false &&

@@ -13,7 +13,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
     const end = createAddisDateTime(testDate, "09:40");
 
     const appt = await bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start,
       endTime: end,
@@ -32,7 +32,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
 
     // First booking succeeds
     await bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start,
       endTime: end,
@@ -43,7 +43,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
     // Second booking for identical slot must be rejected
     await expect(
       bookAppointmentWithProtection({
-        serviceId: "srv-classic-cut",
+        serviceId: "srv-taper",
         barberId: "barber-dawit",
         startTime: start,
         endTime: end,
@@ -59,7 +59,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
 
     // Fire two simultaneous requests at the exact same instant
     const req1 = bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start,
       endTime: end,
@@ -68,7 +68,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
     });
 
     const req2 = bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start,
       endTime: end,
@@ -95,7 +95,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
     const end1 = createAddisDateTime(testDate, "14:40");
 
     await bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start1,
       endTime: end1,
@@ -109,7 +109,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
 
     await expect(
       bookAppointmentWithProtection({
-        serviceId: "srv-classic-cut",
+        serviceId: "srv-taper",
         barberId: "barber-dawit",
         startTime: start2,
         endTime: end2,
@@ -125,7 +125,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
 
     // Barber 1: Dawit
     const reqDawit = bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start,
       endTime: end,
@@ -135,7 +135,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
 
     // Barber 2: Yohannes
     const reqYohannes = bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-yohannes",
       startTime: start,
       endTime: end,
@@ -155,7 +155,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
     const end1 = createAddisDateTime(testDate, "17:40");
 
     const appt1 = await bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start1,
       endTime: end1,
@@ -168,7 +168,7 @@ describe("Double-Booking Protection & Concurrency Control", () => {
     const end2 = createAddisDateTime(testDate, "18:30");
 
     const appt2 = await bookAppointmentWithProtection({
-      serviceId: "srv-classic-cut",
+      serviceId: "srv-taper",
       barberId: "barber-dawit",
       startTime: start2,
       endTime: end2,

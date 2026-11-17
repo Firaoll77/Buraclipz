@@ -526,9 +526,6 @@ export default function BookingsPage() {
                               <p className="text-xs" style={{ color: "#444" }}>
                                 {appt.serviceName} {appt.durationMinutes}min {appt.priceEtb} ETB
                               </p>
-                              <p className="text-xs" style={{ color: "#666" }}>
-                                {appt.barberName}
-                              </p>
                               <p className="text-xs" style={{ color: "#888" }}>
                                 Booked: {formatDateTime(appt.createdAt)}
                               </p>
@@ -634,9 +631,6 @@ export default function BookingsPage() {
                     </p>
                     <p className="text-xs" style={{ color: "#444" }}>
                       {appt.serviceName} {appt.durationMinutes}min {appt.priceEtb} ETB
-                    </p>
-                    <p className="text-xs" style={{ color: "#666" }}>
-                      {appt.barberName}
                     </p>
                     <p className="text-xs" style={{ color: "#888" }}>
                       Booked: {formatDateTime(appt.createdAt)}
@@ -749,11 +743,6 @@ export default function BookingsPage() {
                 <p className="text-sm" style={{ color: "#666" }}>
                   {selectedAppointment.durationMinutes} min {selectedAppointment.priceEtb} ETB
                 </p>
-              </div>
-              
-              <div>
-                <p className="text-xs font-medium" style={{ color: "#888" }}>Barber</p>
-                <p className="text-sm" style={{ color: "#000" }}>{selectedAppointment.barberName}</p>
               </div>
               
               <div>

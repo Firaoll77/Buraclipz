@@ -117,12 +117,11 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <StatCard label="Today's Bookings" value={stats.todayTotal} />
         <StatCard label="Booked" value={stats.todayBooked} sub="active appointments" />
         <StatCard label="Completed" value={stats.todayCompleted} sub="today" />
         <StatCard label="Cancelled" value={stats.todayCancelled} sub="today" />
-        <StatCard label="Barbers" value={stats.totalBarbers} sub="active staff" />
         <StatCard label="Services" value={stats.totalServices} sub="active menu" />
       </div>
 
@@ -178,7 +177,7 @@ export default function AdminDashboard() {
                     {appt.customerName}
                   </p>
                   <p className="text-xs truncate" style={{ color: "#666" }}>
-                    {appt.serviceName} &middot; {appt.barberName}
+                    {appt.serviceName}
                   </p>
                 </div>
                 <div className="shrink-0">
