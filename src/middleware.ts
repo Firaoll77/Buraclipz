@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE, validateSessionToken } from "@/lib/admin-auth";
 
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
-const ADMIN_ACCESS_KEY = process.env.ADMIN_ACCESS_KEY || "buraclipz-staff-77";
-const GATE_COOKIE = "buraclipz_gate_pass";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,51 +18,31 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 2. Disguise & Guard /admin routes
+  // 2. Guard /admin routes
   if (pathname.startsWith("/admin")) {
     const sessionCookie = request.cookies.get(ADMIN_SESSION_COOKIE);
     const isAuthenticated = sessionCookie?.value
       ? validateSessionToken(sessionCookie.value)
       : false;
 
-    // A. Already authenticated:
-    if (isAuthenticated) {
-      if (pathname === "/admin/login") {
+    // Login page:
+    if (pathname === "/admin/login") {
+      // If already signed in, send them straight to dashboard
+      if (isAuthenticated) {
         return NextResponse.redirect(new URL("/admin", request.url));
       }
+      // If signed out or not authenticated, always show the login page
       return NextResponse.next();
     }
 
-    // B. Secret Key Entrance via Query (?key=...)
-    const keyParam = request.nextUrl.searchParams.get("key");
-    if (keyParam && keyParam === ADMIN_ACCESS_KEY) {
-      const redirectUrl = new URL("/admin/login", request.url);
-      const res = NextResponse.redirect(redirectUrl);
-      res.cookies.set(GATE_COOKIE, ADMIN_ACCESS_KEY, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 30 * 60, // 30 minutes window to sign in
-        path: "/",
-      });
-      return res;
-    }
-
-    // C. Active Gate Pass (opened via Secret Key)
-    const gatePass = request.cookies.get(GATE_COOKIE);
-    const hasGatePass = gatePass?.value === ADMIN_ACCESS_KEY;
-
-    if (hasGatePass) {
-      if (pathname === "/admin/login") {
-        return NextResponse.next();
-      }
+    // Any other /admin route: require authentication, redirect to /admin/login if not signed in
+    if (!isAuthenticated) {
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
     }
 
-    // D. Disguised 404: Anyone without session/key sees standard Not Found page
-    return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
+    return NextResponse.next();
   }
 
   // 3. Attach standard CORS headers to API responses

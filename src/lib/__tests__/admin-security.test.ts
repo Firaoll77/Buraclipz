@@ -77,40 +77,34 @@ describe("Admin Security: Rate Limiting & Brute-Force Lockout", () => {
   });
 });
 
-describe("Admin Security: Disguised 404 & Secret Key Gate", () => {
-  it("should disguise /admin as 404 when requested without authentication or key", () => {
+describe("Admin Route Protection & Authentication", () => {
+  it("should redirect unauthenticated /admin requests to /admin/login", () => {
     const req = new NextRequest("http://localhost:3000/admin");
     const res = middleware(req);
 
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toBe("http://localhost:3000/admin/login?from=%2Fadmin");
   });
 
-  it("should disguise /admin/login as 404 when requested without gate key", () => {
+  it("should allow viewing /admin/login when not authenticated", () => {
     const req = new NextRequest("http://localhost:3000/admin/login");
     const res = middleware(req);
 
-    expect(res.status).toBe(404);
+    // Should allow request to proceed (status 200) so user faces login page
+    expect(res.status).toBe(200);
   });
 
-  it("should unlock the gate and set gate cookie when secret key is provided", () => {
-    const req = new NextRequest("http://localhost:3000/admin/login?key=buraclipz-staff-77");
-    const res = middleware(req);
-
-    expect(res.status).toBe(307);
-    expect(res.headers.get("location")).toBe("http://localhost:3000/admin/login");
-    expect(res.cookies.get("buraclipz_gate_pass")?.value).toBe("buraclipz-staff-77");
-  });
-
-  it("should allow viewing /admin/login when gate pass cookie is present", () => {
+  it("should redirect authenticated user on /admin/login to /admin dashboard", () => {
+    const validToken = createSessionToken();
     const req = new NextRequest("http://localhost:3000/admin/login", {
       headers: {
-        cookie: "buraclipz_gate_pass=buraclipz-staff-77",
+        cookie: `${ADMIN_SESSION_COOKIE}=${validToken}`,
       },
     });
     const res = middleware(req);
 
-    // Should allow request to proceed (status 200)
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toBe("http://localhost:3000/admin");
   });
 
   it("should allow authenticated session to access /admin routes directly", () => {
@@ -123,5 +117,13 @@ describe("Admin Security: Disguised 404 & Secret Key Gate", () => {
     const res = middleware(req);
 
     expect(res.status).toBe(200);
+  });
+
+  it("should redirect unauthenticated sub-routes like /admin/bookings to /admin/login with from param", () => {
+    const req = new NextRequest("http://localhost:3000/admin/bookings");
+    const res = middleware(req);
+
+    expect(res.status).toBe(307);
+    expect(res.headers.get("location")).toBe("http://localhost:3000/admin/login?from=%2Fadmin%2Fbookings");
   });
 });

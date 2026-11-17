@@ -1,11 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE } from "@/lib/admin-auth";
 
-const ADMIN_ACCESS_KEY = process.env.ADMIN_ACCESS_KEY || "buraclipz-staff-77";
-const GATE_COOKIE = "buraclipz_gate_pass";
-
-export async function POST() {
-  const response = NextResponse.json({ ok: true });
+function clearAuthCookies(response: NextResponse) {
   response.cookies.set(ADMIN_SESSION_COOKIE, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -13,14 +9,26 @@ export async function POST() {
     maxAge: 0,
     path: "/",
   });
-  // Maintain gate pass for the admin who just signed out so /admin/login is accessible
-  response.cookies.set(GATE_COOKIE, ADMIN_ACCESS_KEY, {
+  // Clear any legacy gate cookie
+  response.cookies.set("buraclipz_gate_pass", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24, // 24 hours window to view login page
+    maxAge: 0,
     path: "/",
   });
+}
+
+export async function POST() {
+  const response = NextResponse.json({ ok: true, redirect: "/admin/login" });
+  clearAuthCookies(response);
+  return response;
+}
+
+export async function GET(request: NextRequest) {
+  const loginUrl = new URL("/admin/login", request.url);
+  const response = NextResponse.redirect(loginUrl);
+  clearAuthCookies(response);
   return response;
 }
 
