@@ -33,24 +33,7 @@ export async function GET(request: NextRequest) {
 
   let allToday: AppointmentData[] = [];
 
-  // In-memory appointments (demo data, fallback-mode bookings)
-  const inMemoryToday = inMemoryAppointments.filter((a) => {
-    const t = new Date(a.startTime);
-    return t >= start && t <= end;
-  });
-
-  for (const a of inMemoryToday) {
-    const barber = await getBarberById(a.barberId);
-    const service = await getServiceById(a.serviceId);
-    allToday.push({
-      ...a,
-      barberName: barber?.name || a.barberName || "Unknown Barber",
-      serviceName: service?.name || a.serviceName || "Unknown Service",
-      durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
-    });
-  }
-
-  // Database appointments — include customer so name/phone are populated
+  // 1. Primary: Database appointments (permanent real customer & admin bookings)
   if (await checkPrismaAvailable()) {
     try {
       const dbAppointments = await prisma.appointment.findMany({
@@ -61,38 +44,50 @@ export async function GET(request: NextRequest) {
         orderBy: { startTime: "asc" },
       });
 
-      const existingIds = new Set(allToday.map((a) => a.id));
-      for (const a of dbAppointments) {
-        if (!existingIds.has(a.id)) {
-          allToday.push({
-            id: a.id,
-            bookingReference: a.bookingReference,
-            customerId: a.customerId,
-            customerName: a.customer.name,
-            customerPhone: a.customer.phone,
-            customerEmail: a.customer.email,
-            telegramChatId: a.customer.telegramChatId,
-            barberId: a.barberId,
-            barberName: a.barber.name,
-            serviceId: a.serviceId,
-            serviceName: a.service.name,
-            durationMinutes: a.service.durationMinutes,
-            startTime: a.startTime,
-            endTime: a.endTime,
-            status: a.status as "BOOKED" | "CANCELLED" | "COMPLETED",
-            priceEtb: a.priceEtb,
-            notes: a.notes,
-            cancellationToken: a.cancellationToken,
-            cancellationReason: a.cancellationReason,
-            cancelledAt: a.cancelledAt,
-            createdAt: a.createdAt,
-            updatedAt: a.updatedAt,
-            paymentScreenshot: a.paymentScreenshot,
-          });
-        }
-      }
+      allToday = dbAppointments.map((a) => ({
+        id: a.id,
+        bookingReference: a.bookingReference,
+        customerId: a.customerId,
+        customerName: a.customer.name,
+        customerPhone: a.customer.phone,
+        customerEmail: a.customer.email,
+        telegramChatId: a.customer.telegramChatId,
+        barberId: a.barberId,
+        barberName: a.barber.name,
+        serviceId: a.serviceId,
+        serviceName: a.service.name,
+        durationMinutes: a.service.durationMinutes,
+        startTime: a.startTime,
+        endTime: a.endTime,
+        status: a.status as "BOOKED" | "CANCELLED" | "COMPLETED",
+        priceEtb: a.priceEtb,
+        notes: a.notes,
+        cancellationToken: a.cancellationToken,
+        cancellationReason: a.cancellationReason,
+        cancelledAt: a.cancelledAt,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt,
+        paymentScreenshot: a.paymentScreenshot,
+      }));
     } catch (err) {
       console.error("Failed to fetch today's appointments from database:", err);
+    }
+  } else {
+    // 2. Fallback: In-memory store (used only when database is offline or in test suite)
+    const inMemoryToday = inMemoryAppointments.filter((a) => {
+      const t = new Date(a.startTime);
+      return t >= start && t <= end;
+    });
+
+    for (const a of inMemoryToday) {
+      const barber = await getBarberById(a.barberId);
+      const service = await getServiceById(a.serviceId);
+      allToday.push({
+        ...a,
+        barberName: barber?.name || a.barberName || "Unknown Barber",
+        serviceName: service?.name || a.serviceName || "Unknown Service",
+        durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
+      });
     }
   }
 

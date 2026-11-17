@@ -35,29 +35,7 @@ export async function GET(request: NextRequest) {
     ? dayBounds(date as string)
     : { start: new Date(0), end: new Date(0) };
 
-  let all: AppointmentData[] = [];
-
-  const inMemoryAppts = inMemoryAppointments.filter((a) => {
-    const matchBarber = !barberId || a.barberId === barberId;
-    const matchStatus = !status || a.status === status;
-    const matchDate =
-      !filterByDate ||
-      (new Date(a.startTime) >= start && new Date(a.startTime) <= end);
-    return matchBarber && matchStatus && matchDate;
-  });
-
-  for (const a of inMemoryAppts) {
-    const barber = await getBarberById(a.barberId);
-    const service = await getServiceById(a.serviceId);
-    all.push({
-      ...a,
-      barberName: barber?.name || a.barberName || "Unknown Barber",
-      barberColor: barber?.color || "#ff9800",
-      serviceName: service?.name || a.serviceName || "Unknown Service",
-      durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
-    });
-  }
-
+  // 1. Primary: Database appointments (permanent real customer & admin bookings)
   if (await checkPrismaAvailable()) {
     try {
       const whereClause: any = {};
@@ -70,46 +48,66 @@ export async function GET(request: NextRequest) {
       const dbAppointments = await prisma.appointment.findMany({
         where: whereClause,
         include: { customer: true, barber: true, service: true },
+        orderBy: { startTime: "asc" },
       });
 
-      const existingIds = new Set(all.map((a) => a.id));
-      for (const a of dbAppointments) {
-        if (!existingIds.has(a.id)) {
-          all.push({
-            id: a.id,
-            bookingReference: a.bookingReference,
-            customerId: a.customerId,
-            customerName: a.customer.name,
-            customerPhone: a.customer.phone,
-            customerEmail: a.customer.email,
-            telegramChatId: a.customer.telegramChatId,
-            barberId: a.barberId,
-            barberName: a.barber.name,
-            barberColor: "#ff9800",
-            serviceId: a.serviceId,
-            serviceName: a.service.name,
-            durationMinutes: a.service.durationMinutes,
-            startTime: a.startTime,
-            endTime: a.endTime,
-            status: a.status as "BOOKED" | "CANCELLED" | "COMPLETED",
-            priceEtb: a.priceEtb,
-            notes: a.notes,
-            cancellationToken: a.cancellationToken,
-            cancellationReason: a.cancellationReason,
-            cancelledAt: a.cancelledAt,
-            createdAt: a.createdAt,
-            updatedAt: a.updatedAt,
-            paymentScreenshot: a.paymentScreenshot,
-            paymentPublicId: a.paymentPublicId ?? null,
-          });
-        }
-      }
+      const appointments: AppointmentData[] = dbAppointments.map((a) => ({
+        id: a.id,
+        bookingReference: a.bookingReference,
+        customerId: a.customerId,
+        customerName: a.customer.name,
+        customerPhone: a.customer.phone,
+        customerEmail: a.customer.email,
+        telegramChatId: a.customer.telegramChatId,
+        barberId: a.barberId,
+        barberName: a.barber.name,
+        barberColor: "#ff9800",
+        serviceId: a.serviceId,
+        serviceName: a.service.name,
+        durationMinutes: a.service.durationMinutes,
+        startTime: a.startTime,
+        endTime: a.endTime,
+        status: a.status as "BOOKED" | "CANCELLED" | "COMPLETED",
+        priceEtb: a.priceEtb,
+        notes: a.notes,
+        cancellationToken: a.cancellationToken,
+        cancellationReason: a.cancellationReason,
+        cancelledAt: a.cancelledAt,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt,
+        paymentScreenshot: a.paymentScreenshot,
+        paymentPublicId: a.paymentPublicId ?? null,
+      }));
+
+      return NextResponse.json({ appointments, date: date || "all" });
     } catch (err) {
       console.error("Failed to fetch appointments from database:", err);
     }
   }
 
-  // Sort by time
+  // 2. Fallback: In-memory store (used when database is offline or in test suite)
+  const inMemoryAppts = inMemoryAppointments.filter((a) => {
+    const matchBarber = !barberId || a.barberId === barberId;
+    const matchStatus = !status || a.status === status;
+    const matchDate =
+      !filterByDate ||
+      (new Date(a.startTime) >= start && new Date(a.startTime) <= end);
+    return matchBarber && matchStatus && matchDate;
+  });
+
+  const all: AppointmentData[] = [];
+  for (const a of inMemoryAppts) {
+    const barber = await getBarberById(a.barberId);
+    const service = await getServiceById(a.serviceId);
+    all.push({
+      ...a,
+      barberName: barber?.name || a.barberName || "Unknown Barber",
+      barberColor: barber?.color || "#ff9800",
+      serviceName: service?.name || a.serviceName || "Unknown Service",
+      durationMinutes: service?.durationMinutes || a.durationMinutes || 0,
+    });
+  }
+
   all.sort((a, b) =>
     new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
   );
