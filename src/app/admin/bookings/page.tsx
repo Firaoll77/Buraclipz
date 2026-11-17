@@ -94,6 +94,8 @@ export default function BookingsPage() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [newBookingCount, setNewBookingCount] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [viewMode, setViewMode] = useState<"active" | "archive">("active");
+  const [archiveSubcategory, setArchiveSubcategory] = useState<"completed" | "cancelled" | "all">("completed");
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [lightboxZoom, setLightboxZoom] = useState(false);
   const initialLoadRef = useRef(false);
@@ -428,219 +430,98 @@ export default function BookingsPage() {
       )}
 
       {/* Appointments List */}
-      {loading ? (
-        <div className="space-y-4">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="card-standard p-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="shrink-0 flex flex-col items-center gap-2">
-                  <div className="h-5 w-12 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-3 w-14 bg-gray-200 rounded animate-pulse" />
-                </div>
-                <div className="flex-1 min-w-0 space-y-2">
-                  <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-3 w-32 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-3 w-48 bg-gray-200 rounded animate-pulse" />
-                  <div className="h-3 w-24 bg-gray-200 rounded animate-pulse" />
-                </div>
-                <div className="shrink-0">
-                  <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : appointments.length === 0 && !showAll ? (
-        <div className="card-standard p-10 text-center">
-          <p style={{ color: "#888" }}>No appointments for this date</p>
-          <button
-            onClick={() => setShowAll(true)}
-            className="mt-3 text-sm text-[#5b4cff] font-medium underline"
-          >
-            View all bookings instead
-          </button>
-        </div>
-      ) : showAll && appointments.length === 0 ? (
-        <div className="card-standard p-10 text-center">
-          <p style={{ color: "#888" }}>No upcoming bookings</p>
-          <button
-            onClick={() => setShowAll(false)}
-            className="mt-3 text-sm text-[#5b4cff] font-medium underline"
-          >
-            View today's appointments
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {showAll ? (
-            // Group by date when showing all
-            (() => {
-              const groupedByDate = appointments.reduce((acc, appt) => {
-                const dateKey = formatDate(appt.startTime);
-                if (!acc[dateKey]) {
-                  acc[dateKey] = [];
-                }
-                acc[dateKey].push(appt);
-                return acc;
-              }, {} as Record<string, Appointment[]>);
+      {(() => {
+        const activeAppointments = appointments.filter((a) => a.status === "BOOKED");
+        const completedAppointments = appointments.filter((a) => a.status === "COMPLETED");
+        const cancelledAppointments = appointments.filter((a) => a.status === "CANCELLED");
+        const archivedAppointments = appointments.filter((a) => a.status !== "BOOKED");
 
-              // Sort dates newest first
-              const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
-                const firstApptA = groupedByDate[a][0];
-                const firstApptB = groupedByDate[b][0];
-                return new Date(firstApptB.startTime).getTime() - new Date(firstApptA.startTime).getTime();
-              });
+        const totalActiveAllTime = allAppointments.filter((a) => a.status === "BOOKED").length;
+        const totalCompletedAllTime = allAppointments.filter((a) => a.status === "COMPLETED").length;
+        const totalCancelledAllTime = allAppointments.filter((a) => a.status === "CANCELLED").length;
+        const totalArchivedAllTime = allAppointments.filter((a) => a.status !== "BOOKED").length;
 
-              return sortedDates.map((date) => {
-                const appts = groupedByDate[date];
-                const sortedAppts = [...appts].sort((a, b) =>
-                  new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
-                );
+        const displayedAppointments = (() => {
+          if (viewMode === "active") {
+            return activeAppointments;
+          }
+          if (archiveSubcategory === "completed") {
+            return completedAppointments;
+          }
+          if (archiveSubcategory === "cancelled") {
+            return cancelledAppointments;
+          }
+          return archivedAppointments;
+        })();
 
-                return (
-                  <div key={date}>
-                    <h3 className="text-sm font-semibold mb-2" style={{ color: "#666" }}>
-                      {date}
-                    </h3>
-                    <div className="space-y-3">
-                      {sortedAppts.map((appt) => (
-                        <div
-                          key={appt.id}
-                          className="card-standard p-4 cursor-pointer hover:shadow-md transition-shadow"
-                          onClick={() => setSelectedAppointment(appt)}
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                            <div className="shrink-0 text-center">
-                              <p className="text-sm font-bold" style={{ color: "#ff9800" }}>
-                                {formatTime(appt.startTime)}
-                              </p>
-                              <p className="text-xs" style={{ color: "#999" }}>{formatDate(appt.startTime)}</p>
-                              <p className="text-xs font-mono" style={{ color: "#888" }}>{appt.bookingReference}</p>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm" style={{ color: "#000" }}>{appt.customerName}</p>
-                              <p className="text-xs" style={{ color: "#666" }}>
-                                Phone: {appt.customerPhone}
-                              </p>
-                              <p className="text-xs" style={{ color: "#444" }}>
-                                {appt.serviceName} {appt.durationMinutes}min {appt.priceEtb} ETB
-                              </p>
-                              <p className="text-xs" style={{ color: "#888" }}>
-                                Booked: {formatDateTime(appt.createdAt)}
-                              </p>
-                              {hasScreenshot(appt) && (
-                                <div className="mt-2">
-                                  <img
-                                    src={screenshotSrc(appt)}
-                                    alt="Payment screenshot"
-                                    className="w-24 h-24 object-cover rounded border cursor-zoom-in"
-                                    style={{ borderColor: "#e5e5e5" }}
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setLightboxSrc(screenshotSrc(appt));
-                                      setLightboxZoom(false);
-                                    }}
-                                    onError={(e) => {
-                                      e.currentTarget.style.display = 'none';
-                                      const link = e.currentTarget.nextElementSibling as HTMLElement;
-                                      if (link) link.style.display = 'none';
-                                    }}
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setLightboxSrc(screenshotSrc(appt));
-                                      setLightboxZoom(false);
-                                    }}
-                                    className="text-xs text-[#5b4cff] font-medium underline inline-flex items-center gap-1"
-                                  >
-                                    <AttachmentIcon size={13} />
-                                    <span>View Payment Screenshot</span>
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span
-                                className="text-xs font-medium px-2 py-1 rounded-full text-white"
-                                style={{ background: STATUS_COLORS[appt.status] || "#999" }}
-                              >
-                                {appt.status}
-                              </span>
-                              {appt.status === "BOOKED" && (
-                                <>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      markStatus(appt.id, "COMPLETED");
-                                    }}
-                                    disabled={actionId === appt.id}
-                                    className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
-                                    style={{ background: "#e8f5e9", color: "#2e7d32", minHeight: 32 }}
-                                  >
-                                    <CheckmarkCircleIcon size={14} />
-                                    <span>Done</span>
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      markStatus(appt.id, "CANCELLED");
-                                    }}
-                                    disabled={actionId === appt.id}
-                                    className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
-                                    style={{ background: "#fce4e4", color: "#c62828", minHeight: 32 }}
-                                  >
-                                    <CancelCircleIcon size={14} />
-                                    <span>Cancel</span>
-                                  </button>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              });
-            })()
-          ) : (
-            // Simple list when showing specific date - sorted by time
-            [...appointments].sort((a, b) =>
-              new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-            ).map((appt) => (
-              <div
-                key={appt.id}
-                className="card-standard p-4 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setSelectedAppointment(appt)}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                  <div className="shrink-0 text-center">
-                    <p className="text-sm font-bold" style={{ color: "#ff9800" }}>
+        const completedRevenue = completedAppointments.reduce((sum, a) => sum + (a.priceEtb || 0), 0);
+
+        function renderCard(appt: Appointment) {
+          const isBooked = appt.status === "BOOKED";
+          const isCompleted = appt.status === "COMPLETED";
+
+          return (
+            <div
+              key={appt.id}
+              className="card-standard p-3.5 sm:p-4 cursor-pointer hover:shadow-md transition-shadow relative overflow-hidden"
+              onClick={() => setSelectedAppointment(appt)}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+                {/* Left Side: Time Badge + Details */}
+                <div className="flex items-start gap-3 min-w-0 flex-1">
+                  {/* Time Badge */}
+                  <div
+                    className={`shrink-0 text-center rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 min-w-[68px] sm:min-w-[76px] border ${
+                      isBooked
+                        ? "bg-[#fff8f0] border-[#ff9800]/30 text-[#ff9800]"
+                        : isCompleted
+                        ? "bg-[#f1f8e9] border-[#43a047]/30 text-[#2e7d32]"
+                        : "bg-[#ffebee] border-[#e53935]/30 text-[#c62828]"
+                    }`}
+                  >
+                    <p className="text-xs sm:text-sm font-bold leading-tight">
                       {formatTime(appt.startTime)}
                     </p>
-                    <p className="text-xs" style={{ color: "#999" }}>{formatDate(appt.startTime)}</p>
-                    <p className="text-xs font-mono" style={{ color: "#888" }}>{appt.bookingReference}</p>
+                    <p className="text-[10px] text-gray-500 font-mono mt-0.5">
+                      {appt.bookingReference}
+                    </p>
                   </div>
+
+                  {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm" style={{ color: "#000" }}>{appt.customerName}</p>
-                    <p className="text-xs" style={{ color: "#666" }}>
-                      Phone: {appt.customerPhone}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-bold text-sm text-[#000] truncate">
+                        {appt.customerName}
+                      </p>
+                      <a
+                        href={`tel:${appt.customerPhone}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-xs text-[#5b4cff] font-medium hover:underline"
+                      >
+                        {appt.customerPhone}
+                      </a>
+                    </div>
+
+                    <p className="text-xs text-[#444] mt-0.5">
+                      <span className="font-semibold text-[#000]">{appt.serviceName}</span> &middot; {appt.durationMinutes} min &middot; <span className="font-bold text-[#000]">{appt.priceEtb} ETB</span>
                     </p>
-                    <p className="text-xs" style={{ color: "#444" }}>
-                      {appt.serviceName} {appt.durationMinutes}min {appt.priceEtb} ETB
+
+                    <p className="text-[11px] text-[#888] mt-0.5">
+                      {formatDate(appt.startTime)} &middot; Booked {formatDateTime(appt.createdAt)}
                     </p>
-                    <p className="text-xs" style={{ color: "#888" }}>
-                      Booked: {formatDateTime(appt.createdAt)}
-                    </p>
+
+                    {appt.cancellationReason && (
+                      <p className="text-[11px] mt-1 text-[#c62828] bg-red-50 border border-red-200 px-2 py-0.5 rounded-lg inline-block font-medium">
+                        Reason: {appt.cancellationReason}
+                      </p>
+                    )}
+
                     {hasScreenshot(appt) && (
-                      <div className="mt-2">
+                      <div className="mt-2 flex items-center gap-2">
                         <img
                           src={screenshotSrc(appt)}
                           alt="Payment screenshot"
-                          className="w-24 h-24 object-cover rounded border cursor-zoom-in"
+                          className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-lg border cursor-zoom-in shadow-xs"
                           style={{ borderColor: "#e5e5e5" }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -649,8 +530,6 @@ export default function BookingsPage() {
                           }}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
-                            const link = e.currentTarget.nextElementSibling as HTMLElement;
-                            if (link) link.style.display = 'none';
                           }}
                         />
                         <button
@@ -663,53 +542,311 @@ export default function BookingsPage() {
                           className="text-xs text-[#5b4cff] font-medium underline inline-flex items-center gap-1"
                         >
                           <AttachmentIcon size={13} />
-                          <span>View Payment Screenshot</span>
+                          <span>View Receipt</span>
                         </button>
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span
-                      className="text-xs font-medium px-2 py-1 rounded-full text-white"
-                      style={{ background: STATUS_COLORS[appt.status] || "#999" }}
+                </div>
+
+                {/* Right Side: Status Badge & Actions */}
+                <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+                  <span
+                    className="text-xs font-semibold px-2.5 py-1 rounded-full text-white shadow-xs"
+                    style={{ background: STATUS_COLORS[appt.status] || "#999" }}
+                  >
+                    {appt.status}
+                  </span>
+
+                  {isBooked && (
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => markStatus(appt.id, "COMPLETED")}
+                        disabled={actionId === appt.id}
+                        className="text-xs px-3 py-1.5 rounded-xl font-bold disabled:opacity-50 inline-flex items-center gap-1 bg-[#e8f5e9] text-[#2e7d32] hover:bg-[#c8e6c9] active:scale-95 transition-all shadow-xs"
+                        style={{ minHeight: 34 }}
+                        title="Mark appointment completed"
+                      >
+                        <CheckmarkCircleIcon size={15} />
+                        <span>Done</span>
+                      </button>
+                      <button
+                        onClick={() => markStatus(appt.id, "CANCELLED")}
+                        disabled={actionId === appt.id}
+                        className="text-xs px-2.5 py-1.5 rounded-xl font-bold disabled:opacity-50 inline-flex items-center gap-1 bg-[#ffebee] text-[#c62828] hover:bg-[#ffcdd2] active:scale-95 transition-all"
+                        style={{ minHeight: 34 }}
+                        title="Cancel appointment"
+                      >
+                        <CancelCircleIcon size={15} />
+                        <span>Cancel</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="space-y-4">
+            {/* View Switcher: Active Queue vs Archive (Touch-friendly & Responsive) */}
+            <div className="bg-[#f0efff] p-1 rounded-2xl flex items-center gap-1 border border-[#5b4cff]/20">
+              <button
+                type="button"
+                onClick={() => setViewMode("active")}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+                  viewMode === "active"
+                    ? "bg-[#5b4cff] text-white shadow-sm"
+                    : "text-[#5b4cff] hover:bg-white/60"
+                }`}
+                style={{ minHeight: 42 }}
+              >
+                <span>✂️ Active Queue</span>
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${
+                    viewMode === "active"
+                      ? "bg-white text-[#5b4cff]"
+                      : "bg-[#5b4cff]/15 text-[#5b4cff]"
+                  }`}
+                >
+                  {activeAppointments.length}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setViewMode("archive")}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+                  viewMode === "archive"
+                    ? "bg-[#0f0f14] text-white shadow-sm"
+                    : "text-[#444] hover:bg-white/60"
+                }`}
+                style={{ minHeight: 42 }}
+              >
+                <span>📦 Archive</span>
+                <span
+                  className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${
+                    viewMode === "archive"
+                      ? "bg-white text-[#0f0f14]"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {archivedAppointments.length}
+                </span>
+              </button>
+            </div>
+
+            {/* Archive Sub-categories (Pill Bar on Mobile & Desktop) */}
+            {viewMode === "archive" && (
+              <div className="bg-white border border-gray-200 rounded-2xl p-3 sm:p-4 space-y-3 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+                    <button
+                      type="button"
+                      onClick={() => setArchiveSubcategory("completed")}
+                      className={`shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-all ${
+                        archiveSubcategory === "completed"
+                          ? "bg-[#43a047] text-white shadow-xs"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                      style={{ minHeight: 34 }}
                     >
-                      {appt.status}
-                    </span>
-                    {appt.status === "BOOKED" && (
-                      <>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            markStatus(appt.id, "COMPLETED");
-                          }}
-                          disabled={actionId === appt.id}
-                          className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
-                          style={{ background: "#e8f5e9", color: "#2e7d32", minHeight: 32 }}
-                        >
-                          <CheckmarkCircleIcon size={14} />
-                          <span>Done</span>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            markStatus(appt.id, "CANCELLED");
-                          }}
-                          disabled={actionId === appt.id}
-                          className="text-xs px-3 py-1.5 rounded-xl font-medium disabled:opacity-50 inline-flex items-center gap-1"
-                          style={{ background: "#fce4e4", color: "#c62828", minHeight: 32 }}
-                        >
-                          <CancelCircleIcon size={14} />
-                          <span>Cancel</span>
-                        </button>
-                      </>
+                      <span>✅ Completed</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                        archiveSubcategory === "completed" ? "bg-white text-[#2e7d32]" : "bg-gray-200 text-gray-700"
+                      }`}>
+                        {completedAppointments.length}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setArchiveSubcategory("cancelled")}
+                      className={`shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-all ${
+                        archiveSubcategory === "cancelled"
+                          ? "bg-[#e53935] text-white shadow-xs"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                      style={{ minHeight: 34 }}
+                    >
+                      <span>❌ Cancelled</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                        archiveSubcategory === "cancelled" ? "bg-white text-[#c62828]" : "bg-gray-200 text-gray-700"
+                      }`}>
+                        {cancelledAppointments.length}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setArchiveSubcategory("all")}
+                      className={`shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-all ${
+                        archiveSubcategory === "all"
+                          ? "bg-[#0f0f14] text-white shadow-xs"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                      style={{ minHeight: 34 }}
+                    >
+                      <span>All Archived</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                        archiveSubcategory === "all" ? "bg-white text-[#0f0f14]" : "bg-gray-200 text-gray-700"
+                      }`}>
+                        {archivedAppointments.length}
+                      </span>
+                    </button>
+                  </div>
+
+                  {!showAll && totalArchivedAllTime > archivedAppointments.length && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAll(true)}
+                      className="text-xs text-[#5b4cff] hover:underline font-bold self-start sm:self-auto shrink-0 inline-flex items-center gap-1"
+                    >
+                      <span>View All-Time Archive ({totalArchivedAllTime}) →</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Sub-category Quick Metric Banner */}
+                {archiveSubcategory === "completed" && completedAppointments.length > 0 && (
+                  <div className="bg-[#e8f5e9]/70 border border-[#c8e6c9] text-[#1b5e20] p-2.5 rounded-xl flex items-center justify-between text-xs sm:text-sm font-medium">
+                    <span>Haircuts Finished: <strong className="font-bold">{completedAppointments.length}</strong></span>
+                    <span>Total Revenue: <strong className="font-bold">{completedRevenue} ETB</strong></span>
+                  </div>
+                )}
+                {archiveSubcategory === "cancelled" && cancelledAppointments.length > 0 && (
+                  <div className="bg-[#ffebee]/70 border border-[#ffcdd2] text-[#b71c1c] p-2.5 rounded-xl flex items-center justify-between text-xs sm:text-sm font-medium">
+                    <span>Cancelled Bookings: <strong className="font-bold">{cancelledAppointments.length}</strong></span>
+                    <span className="text-[11px] opacity-80">Slots reopened for new clients</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Loading Skeleton */}
+            {loading ? (
+              <div className="space-y-3">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="card-standard p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                      <div className="shrink-0 flex flex-col items-center gap-2">
+                        <div className="h-5 w-12 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="h-4 w-40 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-3 w-32 bg-gray-200 rounded animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : displayedAppointments.length === 0 ? (
+              /* Empty States per tab */
+              viewMode === "active" ? (
+                <div className="card-standard p-8 text-center">
+                  <div className="w-12 h-12 rounded-full bg-[#5b4cff]/10 text-[#5b4cff] flex items-center justify-center mx-auto mb-3">
+                    <CheckmarkCircleIcon size={26} />
+                  </div>
+                  <p className="font-bold text-sm text-[#000]">No active bookings in queue</p>
+                  <p className="text-xs text-[#888] mt-1">
+                    {!showAll
+                      ? "All appointments for this date are completed or archived."
+                      : "No active upcoming appointments found."}
+                  </p>
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    {archivedAppointments.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setViewMode("archive")}
+                        className="text-xs px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold"
+                      >
+                        View Completed / Archive ({archivedAppointments.length})
+                      </button>
+                    )}
+                    {!showAll && (
+                      <button
+                        type="button"
+                        onClick={() => setShowAll(true)}
+                        className="text-xs px-3.5 py-2 rounded-xl bg-[#5b4cff]/10 hover:bg-[#5b4cff]/20 text-[#5b4cff] font-bold"
+                      >
+                        View All Dates ({totalActiveAllTime} upcoming)
+                      </button>
                     )}
                   </div>
                 </div>
+              ) : (
+                <div className="card-standard p-8 text-center">
+                  <div className="w-12 h-12 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center mx-auto mb-3">
+                    <ClockIcon size={26} />
+                  </div>
+                  <p className="font-bold text-sm text-[#000]">
+                    No {archiveSubcategory === "all" ? "archived" : archiveSubcategory} appointments
+                  </p>
+                  <p className="text-xs text-[#888] mt-1">
+                    {!showAll
+                      ? `No ${archiveSubcategory} records for this date.`
+                      : `No ${archiveSubcategory} records found in archive.`}
+                  </p>
+                  {!showAll && totalArchivedAllTime > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAll(true)}
+                      className="mt-3 text-xs text-[#5b4cff] font-bold underline"
+                    >
+                      Search All Dates in Archive ({totalArchivedAllTime} total)
+                    </button>
+                  )}
+                </div>
+              )
+            ) : (
+              /* Appointments Render List */
+              <div className="space-y-3">
+                {showAll ? (
+                  (() => {
+                    const groupedByDate = displayedAppointments.reduce((acc, appt) => {
+                      const dateKey = formatDate(appt.startTime);
+                      if (!acc[dateKey]) acc[dateKey] = [];
+                      acc[dateKey].push(appt);
+                      return acc;
+                    }, {} as Record<string, Appointment[]>);
+
+                    const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
+                      const firstApptA = groupedByDate[a][0];
+                      const firstApptB = groupedByDate[b][0];
+                      return new Date(firstApptB.startTime).getTime() - new Date(firstApptA.startTime).getTime();
+                    });
+
+                    return sortedDates.map((dateKey) => {
+                      const appts = groupedByDate[dateKey];
+                      const sortedAppts = [...appts].sort((a, b) =>
+                        new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+                      );
+
+                      return (
+                        <div key={dateKey} className="space-y-2">
+                          <h3 className="text-xs sm:text-sm font-bold text-gray-500 px-1 pt-2 flex items-center justify-between">
+                            <span>{dateKey}</span>
+                            <span className="text-[11px] font-normal text-gray-400">{sortedAppts.length} appointments</span>
+                          </h3>
+                          <div className="space-y-2.5">
+                            {sortedAppts.map((appt) => renderCard(appt))}
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()
+                ) : (
+                  [...displayedAppointments]
+                    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+                    .map((appt) => renderCard(appt))
+                )}
               </div>
-            ))
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        );
+      })()}
 
       {/* Detail Modal */}
       {selectedAppointment && (
