@@ -208,6 +208,7 @@ const globalForStore = globalThis as unknown as {
   __inMemoryServices?: ServiceData[];
   __isPrismaAvailable?: boolean | null;
   __lastPrismaCheck?: number;
+  __prismaCheckPromise?: Promise<boolean> | null;
 };
 
 if (!globalForStore.__inMemoryAppointments) {
@@ -258,28 +259,53 @@ export async function checkPrismaAvailable(): Promise<boolean> {
   // never write test bookings into a real database.
   if (process.env.NODE_ENV === "test") return false;
 
+  // If already confirmed available, return immediately
+  if (globalForStore.__isPrismaAvailable === true) return true;
+
+  // Short 3-second throttle only if it recently failed completely
   const now = Date.now();
   if (
     globalForStore.__isPrismaAvailable === false &&
     globalForStore.__lastPrismaCheck &&
-    now - globalForStore.__lastPrismaCheck < 30000
+    now - globalForStore.__lastPrismaCheck < 3000
   ) {
     return false;
   }
-  if (globalForStore.__isPrismaAvailable === true) return true;
 
-  try {
-    await Promise.race([
-      prisma.$queryRaw`SELECT 1`,
-      new Promise((_, reject) => setTimeout(() => reject(new Error("DB check timeout")), 8000)),
-    ]);
-    globalForStore.__isPrismaAvailable = true;
-    return true;
-  } catch {
-    globalForStore.__isPrismaAvailable = false;
-    globalForStore.__lastPrismaCheck = now;
-    return false;
+  // Deduplicate concurrent check calls during cold wake-up
+  if (globalForStore.__prismaCheckPromise) {
+    return globalForStore.__prismaCheckPromise;
   }
+
+  globalForStore.__prismaCheckPromise = (async () => {
+    // Attempt with 1 automatic retry: allows up to 15s for Neon cold start spin-up
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        await Promise.race([
+          prisma.$queryRaw`SELECT 1`,
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("DB check timeout")), 15000)
+          ),
+        ]);
+        globalForStore.__isPrismaAvailable = true;
+        globalForStore.__lastPrismaCheck = Date.now();
+        return true;
+      } catch (err) {
+        if (attempt === 1) {
+          // Wait 1.5 seconds for Neon container to finish TCP bind, then retry once
+          await new Promise((r) => setTimeout(r, 1500));
+        }
+      }
+    }
+
+    globalForStore.__isPrismaAvailable = false;
+    globalForStore.__lastPrismaCheck = Date.now();
+    return false;
+  })().finally(() => {
+    globalForStore.__prismaCheckPromise = null;
+  });
+
+  return globalForStore.__prismaCheckPromise;
 }
 
 const TARGET_HAIRCUTS = [
