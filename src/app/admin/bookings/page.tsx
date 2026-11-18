@@ -94,6 +94,7 @@ export default function BookingsPage() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [newBookingCount, setNewBookingCount] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [viewMode, setViewMode] = useState<"active" | "archive">("active");
   const [archiveSubcategory, setArchiveSubcategory] = useState<"completed" | "cancelled" | "all">("completed");
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
@@ -254,6 +255,16 @@ export default function BookingsPage() {
             className="input-standard text-xs"
             style={{ minHeight: 40, width: "auto" }}
           />
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as "newest" | "oldest")}
+            className="input-standard text-xs font-semibold py-2 px-3 rounded-xl border border-gray-300 bg-white text-gray-700 hover:border-gray-400 cursor-pointer"
+            style={{ minHeight: 40, width: "auto" }}
+            aria-label="Sort order"
+          >
+            <option value="newest">Sort: Newest First ↓</option>
+            <option value="oldest">Sort: Oldest First ↑</option>
+          </select>
           <button
             onClick={() => fetchAppointments(true)}
             disabled={loading || isRefreshing}
@@ -815,14 +826,18 @@ export default function BookingsPage() {
                     const sortedDates = Object.keys(groupedByDate).sort((a, b) => {
                       const firstApptA = groupedByDate[a][0];
                       const firstApptB = groupedByDate[b][0];
-                      return new Date(firstApptB.startTime).getTime() - new Date(firstApptA.startTime).getTime();
+                      const timeA = new Date(firstApptA.startTime).getTime();
+                      const timeB = new Date(firstApptB.startTime).getTime();
+                      return sortOrder === "newest" ? timeB - timeA : timeA - timeB;
                     });
 
                     return sortedDates.map((dateKey) => {
                       const appts = groupedByDate[dateKey];
-                      const sortedAppts = [...appts].sort((a, b) =>
-                        new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
-                      );
+                      const sortedAppts = [...appts].sort((a, b) => {
+                        const timeA = new Date(a.startTime).getTime();
+                        const timeB = new Date(b.startTime).getTime();
+                        return sortOrder === "newest" ? timeB - timeA : timeA - timeB;
+                      });
 
                       return (
                         <div key={dateKey} className="space-y-2">
@@ -839,7 +854,11 @@ export default function BookingsPage() {
                   })()
                 ) : (
                   [...displayedAppointments]
-                    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+                    .sort((a, b) => {
+                      const timeA = new Date(a.startTime).getTime();
+                      const timeB = new Date(b.startTime).getTime();
+                      return sortOrder === "newest" ? timeB - timeA : timeA - timeB;
+                    })
                     .map((appt) => renderCard(appt))
                 )}
               </div>
