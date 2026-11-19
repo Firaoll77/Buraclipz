@@ -350,62 +350,26 @@ function sortServices(services: ServiceData[]): ServiceData[] {
 
 async function syncDbServicesIfNeeded() {
   try {
-    const existingActive = await prisma.service.findMany({ where: { isActive: true } });
-    const hasObsoleteActive = existingActive.some(
-      (s) => !TARGET_HAIRCUT_NAMES.includes(s.name)
-    );
-    const hasAllTargets = TARGET_HAIRCUT_NAMES.every((name) =>
-      existingActive.some((s) => s.name === name)
-    );
-
-    // If only the target haircuts are active and present, no DB changes needed
-    if (!hasObsoleteActive && hasAllTargets) {
+    const totalCount = await prisma.service.count();
+    // If the database already has services, do NOT overwrite or revert admin customizations!
+    if (totalCount > 0) {
       return;
     }
 
-    // 1. Deactivate old services (e.g. Beard Sculpting, Classic Haircut, etc.) that are not in target haircuts
-    await prisma.service.updateMany({
-      where: {
-        name: { notIn: TARGET_HAIRCUT_NAMES },
-        isActive: true,
-      },
-      data: {
-        isActive: false,
-      },
-    });
-
-    // 2. Fetch all services to see if any match the target haircuts by name
-    const allExisting = await prisma.service.findMany();
-
+    // Only seed initial default services if the table is completely empty
     for (const hc of TARGET_HAIRCUTS) {
-      const match = allExisting.find(
-        (s) => s.name.trim().toLowerCase() === hc.name.trim().toLowerCase()
-      );
-      if (match) {
-        await prisma.service.update({
-          where: { id: match.id },
-          data: {
-            name: hc.name,
-            description: hc.description,
-            durationMinutes: hc.durationMinutes,
-            priceEtb: hc.priceEtb,
-            isActive: true,
-          },
-        });
-      } else {
-        await prisma.service.create({
-          data: {
-            name: hc.name,
-            description: hc.description,
-            durationMinutes: hc.durationMinutes,
-            priceEtb: hc.priceEtb,
-            isActive: true,
-          },
-        });
-      }
+      await prisma.service.create({
+        data: {
+          name: hc.name,
+          description: hc.description,
+          durationMinutes: hc.durationMinutes,
+          priceEtb: hc.priceEtb,
+          isActive: true,
+        },
+      });
     }
   } catch (err) {
-    console.error("Failed to auto-sync services to database:", err);
+    console.error("Failed to seed services to database:", err);
   }
 }
 

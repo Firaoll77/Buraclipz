@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
 const ServiceSchema = z.object({
   name: z.string().min(1).max(100),
-  description: z.string().max(500).optional(),
+  description: z.string().max(500).nullable().optional(),
   durationMinutes: z.number().int().min(5).max(480),
   priceEtb: z.number().min(0),
 });

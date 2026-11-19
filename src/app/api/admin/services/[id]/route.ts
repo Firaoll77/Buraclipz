@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const ServicePatchSchema = z.object({
   name: z.string().min(1).max(100).optional(),
-  description: z.string().max(500).optional(),
+  description: z.string().max(500).nullable().optional(),
   durationMinutes: z.number().int().min(5).max(480).optional(),
   priceEtb: z.number().min(0).optional(),
   isActive: z.boolean().optional(),
